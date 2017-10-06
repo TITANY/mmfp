@@ -29,20 +29,21 @@
             <v-toolbar
                 fixed
                 dark
+                app
                 clipped-left
                 class="teal darken-1"
             >
                 <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
                 <v-toolbar-title v-text="title"></v-toolbar-title>
             </v-toolbar>
-            <main>
-                <v-container fluid>
-                    <v-layout align-start justify-stretch fill-height>
+            <main app>
+                <v-content>
+                    <v-container fluid>
                         <v-slide-y-transition mode="out-in">
                             <router-view></router-view>
                         </v-slide-y-transition>
-                    </v-layout>
-                </v-container>
+                    </v-container>
+                </v-content>
             </main>
             <v-footer fixed app dark class="teal lighten-2">
                 <v-spacer></v-spacer>
@@ -54,18 +55,44 @@
 
 <script>
 import openLink from './utils/openlink';
+import eventBus from './utils/eventbus';
 import sidemenu from './sidemenu';
 
 export default {
     name: 'mmfp',
     data: () => ({
         drawer: true,
-        sidemenu,
         right: true,
-        title: 'MMFP'
+        title: 'MMFP',
+
+        user: {
+            name: null,
+            loggedIn: false
+        }
     }),
+    computed: {
+        sidemenu: function () {
+            const loggedIn = this.user.loggedIn;
+            return sidemenu.filter(item => {
+                if (item.protected)
+                    return loggedIn;
+                if (item.unknownOnly)
+                    return !loggedIn;
+                return true;
+            });
+        }
+    },
     methods: {
         open: link => openLink(link)
+    },
+
+    mounted: function () {
+        eventBus.$on('user-login', ({ username }) => {
+            this.user.name = username;
+            this.user.loggedIn = true;
+            this.$router.push('/theory');
+        });
+        eventBus.$on('open-link', ({ url }) => openLink(url));
     }
 };
 </script>
