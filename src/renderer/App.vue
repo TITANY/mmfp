@@ -23,6 +23,13 @@
                                 <v-list-tile-title v-text="item.label"></v-list-tile-title>
                             </v-list-tile-content>
                         </v-list-tile>
+                        <component
+                            v-if="item.type === 'component'"
+                            :is="item.component"
+                            :data="getData(item.data)"
+                        >
+                            {{ item.content || '' }}
+                        </component>
                     </template>
                 </v-list>
             </v-navigation-drawer>
@@ -58,6 +65,8 @@ import openLink from './utils/openlink';
 import eventBus from './utils/eventbus';
 import sidemenu from './sidemenu';
 
+import UserInfo from './components/sidemenu/UserInfo';
+
 export default {
     name: 'mmfp',
     data: () => ({
@@ -83,7 +92,10 @@ export default {
         }
     },
     methods: {
-        open: link => openLink(link)
+        open: link => openLink(link),
+        getData: function (props) {
+            return props.map(prop => this[prop]);
+        }
     },
 
     mounted: function () {
@@ -93,7 +105,9 @@ export default {
             this.$router.push('/theory');
         });
         eventBus.$on('open-link', ({ url }) => openLink(url));
-    }
+    },
+
+    components: { UserInfo }
 };
 </script>
 
