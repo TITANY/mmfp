@@ -26,7 +26,7 @@
                         <component
                             v-if="item.type === 'component'"
                             :is="item.component"
-                            :data="getData(item.data)"
+                            v-bind="getData(item.data)"
                         >
                             {{ item.content || '' }}
                         </component>
@@ -94,7 +94,11 @@ export default {
     methods: {
         open: link => openLink(link),
         getData: function (props) {
-            return props.map(prop => this[prop]);
+            const result = {};
+            props.forEach(prop => {
+                result[prop] = this[prop];
+            });
+            return result;
         }
     },
 

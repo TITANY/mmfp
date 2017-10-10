@@ -21,9 +21,9 @@
 <script>
 export default {
     name: 'user-info',
-    props: ['data'],
+    props: ['user'],
     computed: {
-        user: function () { return this.data[0]; }
+        // user: function () { return this.data[0]; }
     }
 };
 </script>
