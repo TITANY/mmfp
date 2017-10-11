@@ -1,6 +1,19 @@
 'use strict';
 
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
+import cmd from './cmd';
+
+ipcMain.on('cmd', (event, arg) => {
+    try {
+        const reply = cmd(arg.cmd, arg.params);
+        if (reply !== void 0) {
+            event.sender.send('cmd', { error: false, reply });
+        }
+    } catch (err) {
+        console.error(err);
+        event.sender.send('cmd', { error: true, reply: err });
+    }
+});
 
 /**
  * Set `__static` path to static files in production
@@ -15,7 +28,7 @@ const winURL = process.env.NODE_ENV === 'development'
     ? `http://localhost:9080`
     : `file://${__dirname}/index.html`;
 
-function createWindow () {
+function createWindow() {
     /**
      * Initial window options
      */
@@ -26,6 +39,8 @@ function createWindow () {
     });
 
     mainWindow.loadURL(winURL);
+
+    mainWindow.maximize();
 
     mainWindow.on('closed', () => {
         mainWindow = null;
