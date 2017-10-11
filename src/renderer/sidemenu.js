@@ -4,5 +4,5 @@ export default [
     { type: 'item', label: 'Теория', to: '/theory', icon: 'library_books' },
     { type: 'item', label: 'Тестирование', to: '/testing', icon: 'done_all', protected: true },
     { type: 'item', label: 'Моделирование', to: '/model', icon: 'multiline_chart', protected: true },
-    { type: 'item', label: 'Выход', to: '/exit', icon: 'close' }
+    { type: 'item', label: 'Выход', action: 'quit', icon: 'close' }
 ];

@@ -12,8 +12,9 @@
                         <v-list-tile
                             v-if="item.type === 'item'"
                             router
-                            :to="item.to"
+                            :to="item.to || '/dummy'"
                             :key="i"
+                            @click.native="item.action && sidemenuAction(item.action)"
                             exact
                         >
                             <v-list-tile-action>
@@ -23,6 +24,7 @@
                                 <v-list-tile-title v-text="item.label"></v-list-tile-title>
                             </v-list-tile-content>
                         </v-list-tile>
+
                         <component
                             v-if="item.type === 'component'"
                             :is="item.component"
@@ -63,6 +65,7 @@
 <script>
 import openLink from './utils/openlink';
 import eventBus from './utils/eventbus';
+import cmd from './utils/cmd';
 import sidemenu from './sidemenu';
 
 import UserInfo from './components/sidemenu/UserInfo';
@@ -99,6 +102,13 @@ export default {
                 result[prop] = this[prop];
             });
             return result;
+        },
+        sidemenuAction: function (action) {
+            if (typeof action === typeof '') {
+                cmd(action);
+            } else {
+                cmd(action.cmd, action.args);
+            }
         }
     },
 

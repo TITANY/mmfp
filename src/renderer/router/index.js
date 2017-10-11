@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
+
 Vue.use(Router);
 
 export default new Router({
@@ -31,9 +32,10 @@ export default new Router({
             component: require('@/components/Model')
         },
         {
-            path: '/exit',
-            name: 'exit',
-            component: require('@/components/Exit')
+            path: '/dummy',
+            beforeEnter: (to, from, next) => {
+                next(from);
+            }
         },
         {
             path: '*',
