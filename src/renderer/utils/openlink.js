@@ -1,1 +1,1 @@
-export default function openLink (link) { require('electron').shell.openExternal(link); }
+export default function openLink(link) { require('electron').shell.openExternal(link); }

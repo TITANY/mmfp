@@ -18,11 +18,18 @@ module.exports = {
     'rules': {
         // allow paren-less arrow functions
         'arrow-parens': 0,
+        'curly': 0,
         // allow async-await
         'generator-star-spacing': 0,
         // allow debugger during development
         'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+        'no-multiple-empty-lines': [2, { max: 2, maxEOF: 1, maxBOF: 0 }],
         'indent': ['error', 4],
-        'semi': ['warn', 'always']
+        'semi': ['error', 'always'],
+        'space-before-function-paren': ['error', {
+            'anonymous': 'always',
+            'named': 'never',
+            'asyncArrow': 'always'
+        }]
     }
 }
