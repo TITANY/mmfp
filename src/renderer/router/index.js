@@ -34,7 +34,7 @@ export default new Router({
         {
             path: '/dummy',
             beforeEnter: (to, from, next) => {
-                next(from);
+                next(Object.assign({}, from));
             }
         },
         {

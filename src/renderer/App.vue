@@ -51,6 +51,18 @@
                         <v-slide-y-transition mode="out-in">
                             <router-view></router-view>
                         </v-slide-y-transition>
+                        <mmfp-dialog
+                            v-for="(d, i) in dialogs"
+                            :key="i"
+                            v-model="d.show"
+                            :actions="d.actions"
+                            :title="d.showTitle"
+                            :persistent="d.persistent"
+                            @result="onDialogResult(i, $event)"
+                        >
+                            <div v-text="d.content"></div>
+                            <div v-text="d.title" slot="title" class="headline"></div>
+                        </mmfp-dialog>
                     </v-container>
                 </v-content>
             </main>
@@ -69,6 +81,19 @@ import cmd from './utils/cmd';
 import sidemenu from './sidemenu';
 
 import UserInfo from './components/sidemenu/UserInfo';
+import MmfpDialog from './components/MmfpDialog';
+
+const createConfirmation = (content, title = 'Вы уверены, что хотите продолжить?') => ({
+    content,
+    title,
+    show: true,
+    actions: [
+        { action: 'no', label: 'Нет', closes: true },
+        { action: 'yes', label: 'Да', style: { class: ['indigo', 'white--text'], flat: false } }
+    ],
+    showTitle: true,
+    persistent: true
+});
 
 export default {
     name: 'mmfp',
@@ -80,7 +105,9 @@ export default {
         user: {
             name: null,
             loggedIn: false
-        }
+        },
+
+        dialogs: []
     }),
     computed: {
         sidemenu: function () {
@@ -103,12 +130,38 @@ export default {
             });
             return result;
         },
+
         sidemenuAction: function (action) {
             if (typeof action === typeof '') {
                 cmd(action);
             } else {
-                cmd(action.cmd, action.args);
+                if (action.confirm) {
+                    this.createDialog(
+                        createConfirmation('Вы действительно хотите закрыть приложение?', 'Выход'),
+                        result => {
+                            if (result === 'yes')
+                                cmd(action.cmd, action.args);
+                        }
+                    );
+                } else {
+                    // without confirmation
+                    cmd(action.cmd, action.args);
+                }
             }
+        },
+
+        createDialog: function (params, handler) {
+            this.dialogs.push(params);
+            this.dialogCallbacks.push(handler);
+        },
+
+        removeDialog: function (index) {
+            this.dialogs.splice(index, 1);
+            this.dialogCallbacks.splice(index, 1);
+        },
+
+        onDialogResult: function (index, result) {
+            this.dialogCallbacks[index](result);
         }
     },
 
@@ -119,9 +172,13 @@ export default {
             this.$router.push('/theory');
         });
         eventBus.$on('open-link', ({ url }) => openLink(url));
+
+        // non-reactive data
+        // callbacks:
+        this.dialogCallbacks = [];
     },
 
-    components: { UserInfo }
+    components: { UserInfo, MmfpDialog }
 };
 </script>
 
