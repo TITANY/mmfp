@@ -5,6 +5,7 @@
     absolute
     @input="onDialogInput"
     persistent
+    :width="width"
 >
     <v-card>
         <v-card-title v-if="title">
@@ -42,6 +43,10 @@ export default {
         },
         'title': {
             default: false
+        },
+        'width': {
+            type: String,
+            default: '25%'
         }
     },
     data: () => ({
@@ -82,6 +87,7 @@ export default {
     watch: {
         value: function (nval) {
             this.dialog = nval;
+            console.log(this.width);
         }
     }
 };

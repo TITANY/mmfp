@@ -2,7 +2,7 @@
 <v-layout align-start justify-stretch fill-height>
     <v-card>
         <v-card-title primary-title>
-            <h3 class="headline mb-0">Теория касательно темы</h3>
+            <h3 class="headline mb-0">Теория</h3>
         </v-card-title>
         <v-card-text>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores atque vel animi. Voluptas soluta repellat, eaque fugiat natus exercitationem suscipit, consequuntur eveniet quae officiis fugit commodi deleniti accusantium eligendi praesentium!

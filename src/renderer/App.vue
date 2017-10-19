@@ -44,6 +44,12 @@
             >
                 <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
                 <v-toolbar-title v-text="title"></v-toolbar-title>
+
+                <v-spacer></v-spacer>
+
+                <v-btn icon @click.native="openTopicsList"><v-icon>list</v-icon></v-btn>
+                <v-btn icon @click.native="openSettings"><v-icon>settings</v-icon></v-btn>
+
             </v-toolbar>
             <main app>
                 <v-content>
@@ -58,9 +64,11 @@
                             :actions="d.actions"
                             :title="d.showTitle"
                             :persistent="d.persistent"
+                            :width="d.width"
                             @result="onDialogResult(i, $event)"
                         >
-                            <div v-text="d.content"></div>
+                            <component v-if="d.isComponent" :is="d.componentName" v-bind="this[d.bind]"></component>
+                            <div v-else v-text="d.content"></div>
                             <div v-text="d.title" slot="title" class="headline"></div>
                         </mmfp-dialog>
                     </v-container>
@@ -79,35 +87,35 @@ import openLink from './utils/openlink';
 import eventBus from './utils/eventbus';
 import cmd from './utils/cmd';
 import sidemenu from './sidemenu';
+import { createConfirmation, createComponentAlert } from './utils/dialogs.js';
 
 import UserInfo from './components/sidemenu/UserInfo';
 import MmfpDialog from './components/MmfpDialog';
+import TopicsList from './components/TopicsList';
+import SettingsContent from './components/SettingsContent';
 
-const createConfirmation = (content, title = 'Вы уверены, что хотите продолжить?') => ({
-    content,
-    title,
-    show: true,
-    actions: [
-        { action: 'no', label: 'Нет', closes: true },
-        { action: 'yes', label: 'Да', style: { class: ['indigo', 'white--text'], flat: false } }
-    ],
-    showTitle: true,
-    persistent: true
-});
 
 export default {
     name: 'mmfp',
     data: () => ({
         drawer: true,
         right: true,
-        title: 'MMFP',
+        title: 'Математическое моделирование физических процессов',
 
         user: {
             name: null,
             loggedIn: false
         },
 
-        dialogs: []
+        dialogs: [],
+
+        topics: {
+            selected: -1
+        },
+
+        settings: {
+            logs: []
+        }
     }),
     computed: {
         sidemenu: function () {
@@ -139,8 +147,9 @@ export default {
                     this.createDialog(
                         createConfirmation('Вы действительно хотите закрыть приложение?', 'Выход'),
                         result => {
-                            if (result === 'yes')
+                            if (result === 'yes') {
                                 cmd(action.cmd, action.args);
+                            }
                         }
                     );
                 } else {
@@ -162,6 +171,14 @@ export default {
 
         onDialogResult: function (index, result) {
             this.dialogCallbacks[index](result);
+        },
+
+        openTopicsList: function () {
+            this.createDialog(createComponentAlert('topics-list', 'Список тем'), () => {});
+        },
+
+        openSettings: function () {
+            this.createDialog(createComponentAlert('settings-content', 'Настройки'), () => {});
         }
     },
 
@@ -178,7 +195,7 @@ export default {
         this.dialogCallbacks = [];
     },
 
-    components: { UserInfo, MmfpDialog }
+    components: { UserInfo, MmfpDialog, TopicsList, SettingsContent }
 };
 </script>
 
