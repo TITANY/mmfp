@@ -2,7 +2,6 @@
     <div id="app">
         <v-app>
             <v-navigation-drawer
-                persistent
                 clipped
                 app
                 v-model="drawer"
@@ -11,11 +10,11 @@
                     <template v-for="(item, i) in sidemenu">
                         <v-list-tile
                             v-if="item.type === 'item'"
-                            router
+                            
                             :to="item.to || '/dummy'"
                             :key="i"
                             @click.native="item.action && sidemenuAction(item.action)"
-                            exact
+                            
                         >
                             <v-list-tile-action>
                                 <v-icon v-html="item.icon"></v-icon>
@@ -87,7 +86,8 @@ import openLink from './utils/openlink';
 import eventBus from './utils/eventbus';
 import cmd from './utils/cmd';
 import sidemenu from './sidemenu';
-import { createConfirmation, createComponentAlert } from './utils/dialogs.js';
+import { createConfirmation, createComponentAlert } from './utils/dialogs';
+import { changeLoggedIn } from './utils/protect';
 
 import UserInfo from './components/sidemenu/UserInfo';
 import MmfpDialog from './components/MmfpDialog';
@@ -190,21 +190,28 @@ export default {
         });
         eventBus.$on('open-link', ({ url }) => openLink(url));
 
+        eventBus.$on('navigate', event => {
+            this.$router.push(event);
+        });
+
         // non-reactive data
         // callbacks:
         this.dialogCallbacks = [];
     },
 
-    components: { UserInfo, MmfpDialog, TopicsList, SettingsContent }
+    components: { UserInfo, MmfpDialog, TopicsList, SettingsContent },
+
+    watch: {
+        user: {
+            handler() {
+                changeLoggedIn(this.user.loggedIn);
+            },
+            deep: true
+        }
+    }
 };
 </script>
 
 <style lang="stylus">
 @import './assets/stylus/main.styl';
-</style>
-
-
-<style>
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons');
-/* Global CSS */
 </style>

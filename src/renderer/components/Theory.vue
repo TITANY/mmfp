@@ -9,7 +9,11 @@
         </v-card-text>
         <v-card-actions>
             <v-spacer />
-            <v-btn dark class="teal">Начать тестирование</v-btn>
+            <v-btn
+                dark
+                class="teal"
+                @click.native="navigate('/testing')"
+            >Начать тестирование</v-btn>
             <v-spacer />
         </v-card-actions>
     </v-card>
@@ -17,7 +21,13 @@
 </template>
 
 <script>
+import bus from '../utils/eventbus';
 export default {
-    name: 'theory'
+    name: 'theory',
+    methods: {
+        navigate(to) {
+            bus.$emit('navigate', to);
+        }
+    }
 };
 </script>
