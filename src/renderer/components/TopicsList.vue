@@ -29,6 +29,9 @@
 </template>
 
 <script>
+import cmd from '../utils/cmd';
+
+
 const labels = {
     'theory': 'Теория',
     'tests': 'Тестирование',
@@ -106,6 +109,12 @@ export default {
         },
 
         selectTopic() {}
+    },
+
+    mounted() {
+        cmd('listFiles').then(files => {
+            console.log(files);
+        });
     }
 };
 </script>
