@@ -6,9 +6,10 @@
         <v-subheader inset>{{ cat.name }}</v-subheader>
         <v-list-tile
             avatar
-            v-for="topic in cat.content"
+            v-for="(topic, j) in cat.content"
             :title="topic.description"
-            :key="i"
+            :class="getClassesFor(topic)"
+            :key="j"
             @click="selectTopic(topic)"
         >
             <v-list-tile-avatar>
@@ -59,6 +60,7 @@ const splitToCats = ts => {
 };
 
 const normalizeTopic = t => ({
+    id: t.meta.id,
     name: t.meta.name,
     description: t.meta.description,
     category: t.meta.category,
@@ -79,7 +81,8 @@ export default {
 
     data: () => ({
         cats: [],
-        error: false
+        error: false,
+        selected: null
     }),
 
     methods: {
@@ -99,7 +102,8 @@ export default {
         },
 
         selectTopic(topic) {
-            bus.$emit('select-topic', topic.original);
+            bus.$emit('pre-select-topic', topic.original);
+            this.selected = topic;
         },
 
         refresh() {
@@ -111,6 +115,13 @@ export default {
                     console.error(error);
                     this.error = true;
                 });
+        },
+
+        getClassesFor(topic) {
+            if (this.selected && topic.id === this.selected.id) {
+                return ['teal', 'lighten-4'];
+            }
+            return [];
         }
     },
 

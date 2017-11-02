@@ -68,7 +68,12 @@
                         >
                             <component v-if="d.isComponent" :is="d.componentName" v-bind="this[d.bind]"></component>
                             <div v-else v-text="d.content"></div>
-                            <div v-text="d.title" slot="title" class="headline"></div>
+                            <div
+                                v-if="d.showTitle"
+                                v-text="d.title"
+                                slot="title"
+                                class="headline"
+                            ></div>
                         </mmfp-dialog>
                     </v-container>
                 </v-content>
@@ -86,7 +91,7 @@ import openLink from './utils/openlink';
 import eventBus from './utils/eventbus';
 import cmd from './utils/cmd';
 import sidemenu from './sidemenu';
-import { createConfirmation, createComponentAlert } from './utils/dialogs';
+import { createComponent, actionsApplyCancel, confirmation } from './utils/dialogs';
 import { changeLoggedIn } from './utils/protect';
 
 import UserInfo from './components/sidemenu/UserInfo';
@@ -94,6 +99,8 @@ import MmfpDialog from './components/MmfpDialog';
 import TopicsList from './components/TopicsList';
 import SettingsContent from './components/SettingsContent';
 
+
+const noop = () => {};
 
 export default {
     name: 'mmfp',
@@ -109,6 +116,7 @@ export default {
 
         dialogs: [],
 
+        preSelectedTopic: null,
         selectedTopic: null,
 
         settings: {
@@ -143,7 +151,7 @@ export default {
             } else {
                 if (action.confirm) {
                     this.createDialog(
-                        createConfirmation('Вы действительно хотите закрыть приложение?', 'Выход'),
+                        confirmation('Вы действительно хотите закрыть приложение?', 'Выход'),
                         result => {
                             if (result === 'yes') {
                                 cmd(action.cmd, action.args);
@@ -157,7 +165,7 @@ export default {
             }
         },
 
-        createDialog: function (params, handler) {
+        createDialog: function (params, handler = noop) {
             this.dialogs.push(params);
             this.dialogCallbacks.push(handler);
         },
@@ -172,11 +180,28 @@ export default {
         },
 
         openTopicsList: function () {
-            this.createDialog(createComponentAlert('topics-list', 'Список тем'), () => {});
+            this.createDialog(
+                actionsApplyCancel(
+                    createComponent(
+                        'topics-list',
+                        { title: 'Список тем' }
+                    )
+                ),
+                result => {
+                    if (result === 'apply') {
+                        if (this.preSelectedTopic === null) return;
+                        this.selectedTopic = this.preSelectedTopic;
+                        this.preSelectedTopic = null;
+                        this.title = this.selectedTopic.meta.name;
+                    } else {
+                        this.preSelectedTopic = null;
+                    }
+                }
+            );
         },
 
         openSettings: function () {
-            this.createDialog(createComponentAlert('settings-content', 'Настройки'), () => {});
+            this.createDialog(createComponent('settings-content', { title: 'Настройки' }), () => {});
         }
     },
 
@@ -192,9 +217,8 @@ export default {
             this.$router.push(event);
         });
 
-        eventBus.$on('select-topic', topic => {
-            this.title = topic.meta.name;
-            this.selectedTopic = topic;
+        eventBus.$on('pre-select-topic', topic => {
+            this.preSelectedTopic = topic;
         });
 
         // non-reactive data
