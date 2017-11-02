@@ -109,9 +109,7 @@ export default {
 
         dialogs: [],
 
-        topics: {
-            selected: -1
-        },
+        selectedTopic: null,
 
         settings: {
             logs: []
@@ -192,6 +190,11 @@ export default {
 
         eventBus.$on('navigate', event => {
             this.$router.push(event);
+        });
+
+        eventBus.$on('select-topic', topic => {
+            this.title = topic.meta.name;
+            this.selectedTopic = topic;
         });
 
         // non-reactive data
