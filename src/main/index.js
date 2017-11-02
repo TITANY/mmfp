@@ -10,10 +10,10 @@ ipcMain.on('cmd', (event, arg) => {
         console.error(reply);
         if (reply !== void 0) {
             if (!(reply instanceof Promise)) {
-                // if (reply instanceof Error)
-                //     reply = Promise.reject(reply);
-                // else
-                reply = Promise.resolve(reply);
+                if (reply instanceof Error)
+                    reply = Promise.reject(reply);
+                else
+                    reply = Promise.resolve(reply);
             }
             reply
                 .then(reply => event.sender.send('cmd', { error: false, reply }))

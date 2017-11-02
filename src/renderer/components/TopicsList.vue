@@ -7,8 +7,9 @@
         <v-list-tile
             avatar
             v-for="topic in cat.content"
+            :title="topic.description"
             :key="i"
-            @click="selectTopic(i)"
+            @click="selectTopic(topic)"
         >
             <v-list-tile-avatar>
                 <v-icon>{{ getIcon(topic) }}</v-icon>
@@ -29,7 +30,8 @@
 </template>
 
 <script>
-import cmd from '../utils/cmd';
+import { topics } from '../../files';
+import bus from '../utils/eventbus';
 
 
 const labels = {
@@ -38,58 +40,46 @@ const labels = {
     'model': 'Моделирование'
 };
 
+const splitToCats = ts => {
+    const cats = {};
+    ts.forEach(t => {
+        const catName = t.category || 'Без категории';
+        const cat = cats[catName];
+        if (Array.isArray(cat)) {
+            cat.push(t);
+        } else {
+            cats[catName] = [t];
+        }
+    });
+    return Object.keys(cats)
+        .map(catName => ({
+            name: catName,
+            content: cats[catName]
+        }));
+};
+
+const normalizeTopic = t => ({
+    name: t.meta.name,
+    description: t.meta.description,
+    category: t.meta.category,
+
+    has: {
+        theory: typeof t.theory === typeof {},
+        tests: typeof t.tests === typeof {},
+        model: typeof t.model === typeof {}
+    },
+    passed: false,
+
+    original: t
+});
+
 export default {
     name: 'topics-list',
     props: ['topics'],
 
     data: () => ({
-        cats: [
-            {
-                name: 'Категория 1',
-                content: [
-                    {
-                        name: 'Тема 1.1',
-                        has: { theory: true, tests: true, model: true },
-                        passed: false
-                    },
-                    {
-                        name: 'Тема 1.2',
-                        has: { theory: true, tests: true, model: false },
-                        passed: true
-                    },
-                    {
-                        name: 'Тема 1.3',
-                        has: { theory: true, tests: false, model: false },
-                        passed: true
-                    }
-                ]
-            },
-            {
-                name: 'Категория 2',
-                content: [
-                    {
-                        name: 'Тема 2.1',
-                        has: { theory: false, tests: true, model: true },
-                        passed: false
-                    },
-                    {
-                        name: 'Тема 2.2',
-                        has: { theory: true, tests: true, model: false },
-                        passed: true
-                    },
-                    {
-                        name: 'Тема 2.3',
-                        has: { theory: true, tests: true, model: false },
-                        passed: false
-                    },
-                    {
-                        name: 'Тема 2.4',
-                        has: { theory: true, tests: false, model: true },
-                        passed: false
-                    }
-                ]
-            }
-        ]
+        cats: [],
+        error: false
     }),
 
     methods: {
@@ -108,13 +98,24 @@ export default {
             return `${l.join(', ')} (${p})`;
         },
 
-        selectTopic() {}
+        selectTopic(topic) {
+            bus.$emit('select-topic', topic.original);
+        },
+
+        refresh() {
+            topics.list()
+                .then(topics => {
+                    this.cats = splitToCats(topics.map(normalizeTopic));
+                })
+                .catch(error => {
+                    console.error(error);
+                    this.error = true;
+                });
+        }
     },
 
     mounted() {
-        cmd('listFiles').then(files => {
-            console.log(files);
-        });
+        this.refresh();
     }
 };
 </script>

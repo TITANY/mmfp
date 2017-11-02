@@ -2,14 +2,15 @@
     "meta": {
         "id": "01-topic-1",
         "name":"Изменение изотопного состава ЯР",
-        "description": "Изучение зависимости изотопного состава ядерного реактора от времени"
+        "description": "Изучение зависимости изотопного состава ядерного реактора от времени",
+        "category": "Вступление"
     },
     "theory": {
         "file": "content.html",
         "type": "html_part",
         "check": "..."
     },
-    "test": {
+    "tests": {
         "file": "test.ots",
         "type": "obfuscated_test",
         "check": "..."
