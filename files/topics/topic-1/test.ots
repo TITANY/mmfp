@@ -1,0 +1,16 @@
+[
+    {
+        "answers": [
+            "Красный",
+            "Зелёный",
+            "Синий",
+            "Чёрный (основы)"
+        ],
+        "await": [3],
+        "check_type": "simple",
+        "points": { "win": 1, "lose": 0 },
+        "question": "Какого цвета учебник?",
+        "shown_answers": { "min": 4, "max": 4 },
+        "type": "single"
+    }
+]
