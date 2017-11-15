@@ -117,7 +117,6 @@ export default {
         dialogs: [],
 
         preSelectedTopic: null,
-        selectedTopic: null,
 
         settings: {
             logs: []
@@ -133,6 +132,10 @@ export default {
                     return !loggedIn;
                 return true;
             });
+        },
+
+        selectedTopic() {
+            return this.$store.selectedTopic;
         }
     },
     methods: {
@@ -190,9 +193,11 @@ export default {
                 result => {
                     if (result === 'apply') {
                         if (this.preSelectedTopic === null) return;
-                        this.selectedTopic = this.preSelectedTopic;
+                        const topic = this.preSelectedTopic;
                         this.preSelectedTopic = null;
-                        this.title = this.selectedTopic.meta.name;
+                        this.title = topic.meta.name;
+
+                        this.$store.commit('selectTopic', { topic });
                     } else {
                         this.preSelectedTopic = null;
                     }

@@ -1,17 +1,10 @@
 import path from 'path';
-import fs from 'fs';
-import mkdirp from 'mkdirp';
-import promisify from './promisify';
-
+import { mkdir, readDir, readJson } from './fs';
+import readTheory from './theory';
 
 const cwd = process.cwd();
 const TOPICS_DIR = path.resolve(cwd, 'files', 'topics');
-
-const readDir = promisify(fs.readdir, fs);
-const mkdir = promisify(mkdirp);
-const readFile = promisify(fs.readFile, fs);
-const readText = file => readFile(file, 'utf-8');
-const readJson = file => readText(file).then(t => JSON.parse(t));
+const TOPIC_JSON = 'topic.json';
 
 export const topics = {
     list() {
@@ -19,10 +12,10 @@ export const topics = {
             .then(() => readDir(TOPICS_DIR))
             .then(dirs => Promise.all(dirs.map(dir => {
                 console.log('DIR:', dir);
-                const topicJson = path.resolve(TOPICS_DIR, dir, 'topic.json');
+                const topicJson = path.resolve(TOPICS_DIR, dir, TOPIC_JSON);
                 return readJson(topicJson)
                     .then(topic => ({
-                        error: console.log(topic) || false,
+                        error: false,
                         result: Object.assign(topic, { dir })
                     }))
                     .catch(error => ({
@@ -32,6 +25,23 @@ export const topics = {
             })))
             .then(results => results.filter(r => !r.error))
             .then(results => results.map(r => r.result))
+        ;
+    },
+
+    get(dirname) {
+        return mkdir(TOPICS_DIR)
+            .then(() => readJson(path.resolve(TOPICS_DIR, dirname, TOPIC_JSON)))
+            .then(topic => {
+                return {
+                    theory() {
+                        return readTheory(topic, path.resolve(TOPICS_DIR, dirname));
+                    },
+
+                    tests() {},
+
+                    model() {}
+                };
+            })
         ;
     }
 };
