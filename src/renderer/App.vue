@@ -54,7 +54,9 @@
                 <v-content>
                     <v-container fluid>
                         <v-slide-y-transition mode="out-in">
-                            <router-view></router-view>
+                            <keep-alive>
+                                <router-view></router-view>
+                            </keep-alive>
                         </v-slide-y-transition>
                         <mmfp-dialog
                             v-for="(d, i) in dialogs"
