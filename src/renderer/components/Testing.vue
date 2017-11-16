@@ -141,7 +141,6 @@ export default {
                 changedAt: null
             },
 
-            finished: false,
             results: [],
 
             loaded: false,
@@ -161,6 +160,10 @@ export default {
                 return this.$store.state.selectedTopic.dir;
             else
                 return void 0;
+        },
+
+        finished() {
+            return this.$store.state.tests.finished;
         }
     },
 
@@ -205,7 +208,7 @@ export default {
         },
 
         checkResults() {
-            this.finished = true;
+            this.$store.commit('finishTests', { result: null });
         },
 
         getComponentNameFor(test) {
