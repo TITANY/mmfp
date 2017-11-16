@@ -1,6 +1,8 @@
 <template>
-    <div v-html="content" class="html-part-viewer-content">
+<div>
+    <div v-html="content" class="html-part-viewer-content mathjax">
     </div>
+</div>
 </template>
 
 <script>
@@ -29,6 +31,7 @@ export default {
 
     methods: {
         parseScripts() {
+            // formulas
             const $content = $('.html-part-viewer-content');
             const formulas = $content.find('script[type="application/x-math-plot"]');
 
@@ -58,6 +61,9 @@ export default {
                     }]
                 });
             });
+
+            // mathjax
+            window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub]);
         }
     },
 
