@@ -1,6 +1,6 @@
 import path from 'path';
 import { mkdir, readDir, readJson } from './fs';
-import readTheory from './theory';
+import readSection from './section';
 
 const cwd = process.cwd();
 const TOPICS_DIR = path.resolve(cwd, 'files', 'topics');
@@ -34,12 +34,16 @@ export const topics = {
             .then(topic => {
                 return {
                     theory() {
-                        return readTheory(topic, path.resolve(TOPICS_DIR, dirname));
+                        return readSection(topic.theory, path.resolve(TOPICS_DIR, dirname));
                     },
 
-                    tests() {},
+                    tests() {
+                        return readSection(topic.tests, path.resolve(TOPICS_DIR, dirname));
+                    },
 
-                    model() {}
+                    model() {
+                        return readSection(topic.model, path.resolve(TOPICS_DIR, dirname));
+                    }
                 };
             })
         ;

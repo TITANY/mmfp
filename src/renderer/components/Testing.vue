@@ -4,25 +4,42 @@
             <v-card>
                 <v-card-title class="headline">Тестирование</v-card-title>
                 <v-card-text>
-                    <v-radio-group
-                        v-for="(task, i) in tests"
-                        :key="i"
-                        v-model="answers[i]"
-                        :mandatory="false"
-                    >
-                        <p>{{ task.question }}</p>
-                        <v-radio
-                            v-for="(answer, j) in task.answers"
-                            :label="answer"
-                            :value="j"
-                            :key="j"
-                        ></v-radio>
-                        <v-divider></v-divider>
-                    </v-radio-group>
+                    <p v-if="error" class="red--text">{{ error }}</p>
+                    <p v-if="!loaded && !loading" class="center--text">
+                        Выберите тему, нажав на иконку списка в панели сверху.
+                    </p>
+                    <div v-if="loading">
+                        <p>Загрузка теста...</p>
+                        <v-progress-circular indeterminate color="teal"></v-progress-circular>
+                    </div>
+                    <template v-if="loaded && !loading">
+                        <div class="pb-3">
+                            <div>{{ meta.description }}</div>
+                            <div><b>Автор:</b> {{ meta.changedBy }}</div>
+                            <div><b>Создан:</b> {{ meta.changedAt.toLocaleString() }}</div>
+                        </div>
+                        
+                        <template
+                            v-for="(test, i) in tests"
+                        >
+                            <v-divider></v-divider>
+                            <component
+                                :is="getComponentNameFor(test)"
+                                :question="test.question"
+                                :answers="test.answers"
+                                :value="getAnswer(i)"
+                                @input="setAnswer(i, $event)"
+                            ></component>
+                        </template>
+                    </template>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn class="teal white--text">Закончить тестирование</v-btn>
+                    <v-btn
+                        v-if="loaded && !loading"
+                        class="teal white--text"
+                        @click="checkResults"
+                    >Закончить тестирование</v-btn>
                 </v-card-actions>
             </v-card>
         </v-flex>
@@ -30,33 +47,167 @@
 </template>
 
 <script>
+import shuffle from 'lodash/shuffle';
+import { topics } from '../../files';
+import components from './tests';
+
+
+const testsParsers = {
+    'obfuscated_test': content => {
+        const parsed = JSON.parse(content);
+        parsed.meta = {
+            description: parsed.meta.description || '(нет описания)',
+            scores: parsed.meta.scores.sort((a, b) => {
+                if (a.default) return -1;
+                if (b.default) return 1;
+                return b.starts_from - a.starts_from;
+            }),
+            changedBy: parsed.meta.changed_by,
+            changedAt: new Date(parsed.meta.changed_at)
+        };
+        return parsed;
+    }
+};
+
+/* eslint-disable no-unused-vars */
+const checkTypes = {
+    simple: (given, correct, { win, lose }) => {
+        if (given.length !== correct.length) return lose;
+        given.sort();
+        correct.sort();
+        for (let i = 0; i < given.length; i++) {
+            if (given[i] !== correct[i])
+                return lose;
+        }
+        return win;
+    }
+};
+
+const componentNames = {
+    single: 'test-radio-group',
+    multiple: 'test-checkboxes'
+};
+
+const prepareTestAnswers = testDescription => {
+    const answers = testDescription.answers;
+    const { min, max } = testDescription.shown_answers;
+
+    // extracting correct answers
+    let correctAnswersIndexes = [];
+    if (testDescription.type === 'single') {
+        correctAnswersIndexes.push(testDescription.await);
+    } else {
+        correctAnswersIndexes = testDescription.await.slice();
+    }
+    // and incorrect ones (shuffled to randomize their pick)
+    const incorrectAnswers = shuffle(
+        answers.filter(
+            (_, i) => !correctAnswersIndexes.includes(i)
+        )
+    );
+
+    // all correct answers should be shown
+    let shownAnswers = correctAnswersIndexes.map(i => answers[i]);
+    // not less than total correct answers count
+    const answersCount = Math.max(shownAnswers.length, Math.floor(Math.random() * (max - min)) + min);
+    // how many incorrect answers we should include (not more than we have at total)
+    const n = Math.min(answersCount - shownAnswers.length, incorrectAnswers.length);
+    shownAnswers = shownAnswers.concat(incorrectAnswers.slice(0, n));
+    return shuffle(shownAnswers);
+};
+
 export default {
     name: 'testing',
 
     data() {
         return {
-            tests: [
-                {
-                    question: `Какого цвета учебник?`,
-                    answers: [
-                        `Синий`,
-                        `Зелёный`,
-                        `Чёрный (основы)`
-                    ]
-                },
-                {
-                    question: `Автор скольки статей и научных работ?`,
-                    answers: [
-                        `300`,
-                        `1337`,
-                        `144`,
-                        `Более 400`
-                    ]
-                }
-            ],
+            tests: [],
+            answers: [],
+            meta: {
+                description: '',
+                scores: [],
+                changedBy: null,
+                changedAt: null
+            },
 
-            answers: []
+            loaded: false,
+            loading: false,
+            error: false
         };
-    }
+    },
+
+    computed: {
+        selectedTopic() {
+            return this.$store.state.selectedTopic;
+        },
+
+        selectedTopicDir() {
+            const topic = this.$store.state.selectedTopic;
+            if (typeof topic === typeof {} && topic !== null)
+                return this.$store.state.selectedTopic.dir;
+            else
+                return void 0;
+        }
+    },
+
+    methods: {
+        loadAndShow(dirname) {
+            this.loading = true;
+            this.loaded = false;
+            return topics.get(dirname)
+                .then(topic => topic.tests())
+                .then(tests => {
+                    if (tests.type in testsParsers) {
+                        const parsed = testsParsers[tests.type](tests.content);
+                        this.tests = parsed.content.map(t => {
+                            t.answers = prepareTestAnswers(t);
+                            return t;
+                        });
+                        this.answers = parsed.content.map(t => ({
+                            // default answers for types
+                            'single': () => -1,
+                            'multiple': () => []
+                        })[t.type]());
+                        this.meta = parsed.meta;
+                    }
+
+                    this.loading = false;
+                    this.loaded = true;
+                })
+                .catch(error => {
+                    this.error = error.toString();
+                    this.loaded = false;
+                    this.loading = false;
+                });
+        },
+
+        getAnswer(i) {
+            return this.answers[i];
+        },
+        setAnswer(i, a) {
+            this.answers.splice(i, 1, a);
+        },
+
+        checkResults() {},
+
+        getComponentNameFor(test) {
+            return componentNames[test.type] || 'unknown-test-type';
+        }
+    },
+    mounted() {
+        if (this.selectedTopic) {
+            this.loadAndShow(this.selectedTopicDir);
+        }
+    },
+    watch: {
+        selectedTopicDir(nval, oval) {
+            if (nval !== oval)
+                this.loadAndShow(nval);
+        }
+    },
+    components: Object.assign(
+        {},
+        components
+    )
 };
 </script>
