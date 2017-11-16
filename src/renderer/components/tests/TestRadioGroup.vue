@@ -11,6 +11,7 @@
             :value="j"
             :color="getColor(answer)"
             :class="getClass(answer)"
+            :disabled="finished"
             :key="j + '_' + answer.label"
         ></v-radio>
     </v-radio-group>

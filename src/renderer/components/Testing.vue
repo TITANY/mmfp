@@ -199,7 +199,9 @@ export default {
             return this.answers[i];
         },
         setAnswer(i, a) {
-            this.answers.splice(i, 1, a);
+            if (!this.finished) {
+                this.answers.splice(i, 1, a);
+            }
         },
 
         checkResults() {

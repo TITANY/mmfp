@@ -6,8 +6,8 @@
         v-model="chosenAnswer"
         :label="answer.label"
         :value="j"
-        :color="getColor(answer)"
         :class="getClass(answer)"
+        :disabled="finished"
         hide-details
         :key="j + '_' + answer.label"
     ></v-checkbox>
@@ -46,7 +46,7 @@ export default {
     watch: {
         chosenAnswer(nval, oval) {
             if (!isEqual(nval, oval)) {
-                this.$emit('input', nval);
+                this.$emit('input', nval.slice());
             }
         },
         value(nval) {
