@@ -8,7 +8,7 @@
         <v-radio
             v-for="(answer, j) in answers"
             :label="answer.label"
-            :value="j"
+            :value="answer.id"
             :color="getColor(answer)"
             :class="getClass(answer)"
             :disabled="finished"

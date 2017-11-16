@@ -5,7 +5,7 @@
         v-for="(answer, j) in answers"
         v-model="chosenAnswer"
         :label="answer.label"
-        :value="j"
+        :value="answer.id"
         :class="getClass(answer)"
         :disabled="finished"
         hide-details

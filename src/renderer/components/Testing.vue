@@ -18,6 +18,11 @@
                             <div><b>Автор:</b> {{ meta.changedBy }}</div>
                             <div><b>Создан:</b> {{ meta.changedAt.toLocaleString() }}</div>
                         </div>
+
+                        <v-alert color="info" icon="info" :value="finished" v-if="finished">
+                            <div>Результат: {{ testResult.title }}</div>
+                            <div>Баллы: {{ testResult.score }}</div>
+                        </v-alert>
                         
                         <template
                             v-for="(test, i) in tests"
@@ -49,6 +54,7 @@
 
 <script>
 import shuffle from 'lodash/shuffle';
+import zipWith from 'lodash/zipWith';
 import { topics } from '../../files';
 import components from './tests';
 
@@ -61,7 +67,7 @@ const testsParsers = {
             scores: parsed.meta.scores.sort((a, b) => {
                 if (a.default) return -1;
                 if (b.default) return 1;
-                return b.starts_from - a.starts_from;
+                return a.starts_from - b.starts_from;
             }),
             changedBy: parsed.meta.changed_by,
             changedAt: new Date(parsed.meta.changed_at)
@@ -90,7 +96,10 @@ const componentNames = {
 };
 
 const prepareTestAnswers = testDescription => {
-    const answers = testDescription.answers;
+    const answers = testDescription.answers.map((label, id) => ({
+        label,
+        id
+    }));
     const { min, max } = testDescription.shown_answers;
 
     // extracting correct answers
@@ -102,14 +111,16 @@ const prepareTestAnswers = testDescription => {
     }
     // and incorrect ones (shuffled to randomize their pick)
     const incorrectAnswers = shuffle(
-        answers.filter(
-            (_, i) => !correctAnswersIndexes.includes(i)
-        )
+        answers
+            .filter(
+                (_, i) => !correctAnswersIndexes.includes(i)
+            )
     );
 
     // all correct answers should be shown
     let shownAnswers = correctAnswersIndexes.map(i => ({
-        label: answers[i],
+        label: answers[i].label,
+        id: answers[i].id,
         correct: true
     }));
     // not less than total correct answers count
@@ -119,13 +130,16 @@ const prepareTestAnswers = testDescription => {
     shownAnswers = shownAnswers.concat(
         incorrectAnswers
             .slice(0, n)
-            .map(label => ({
+            .map(({label, id}) => ({
                 label,
+                id,
                 correct: false
             }))
     );
     return shuffle(shownAnswers);
 };
+
+const wrapIntoArrayIf = (condition, v) => condition ? [v] : v;
 
 export default {
     name: 'testing',
@@ -164,6 +178,9 @@ export default {
 
         finished() {
             return this.$store.state.tests.finished;
+        },
+        testResult() {
+            return this.$store.state.tests.result;
         }
     },
 
@@ -208,7 +225,40 @@ export default {
         },
 
         checkResults() {
-            this.$store.commit('finishTests', { result: null });
+            const results = zipWith(this.tests, this.answers, (test, answers) => {
+                const isSingle = test.type === 'single';
+                const
+                    given = wrapIntoArrayIf(isSingle, answers),
+                    expected = wrapIntoArrayIf(isSingle, test.await);
+
+                const checker = checkTypes[test.check_type];
+
+                if (checker) {
+                    const score = checker(given, expected, test.points);
+                    return score;
+                } else {
+                    throw new TypeError('Unknown test type: ' + test.check_type);
+                }
+            });
+
+            const score = results.reduce((sum, i) => sum + i, 0);
+
+            const result = { title: null, score };
+            for (let i = 0; i < this.meta.scores.length; i++) {
+                const s = this.meta.scores[i];
+                if (s.default) {
+                    result.title = s.title;
+                    continue;
+                } else {
+                    if (s.starts_from > score) {
+                        break;
+                    } else {
+                        result.title = s.title;
+                    }
+                }
+            }
+
+            this.$store.commit('finishTests', { result });
         },
 
         getComponentNameFor(test) {
