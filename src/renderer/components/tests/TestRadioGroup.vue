@@ -7,9 +7,11 @@
     >
         <v-radio
             v-for="(answer, j) in answers"
-            :label="answer"
+            :label="answer.label"
             :value="j"
-            :key="j + '_' + answer"
+            :color="getColor(answer)"
+            :class="getClass(answer)"
+            :key="j + '_' + answer.label"
         ></v-radio>
     </v-radio-group>
 </div>
@@ -21,12 +23,23 @@ export default {
     props: {
         'value': Number,
         'question': String,
-        'answers': Array
+        'answers': Array,
+        'finished': Boolean
     },
     data() {
         return {
             chosenAnswer: this.value
         };
+    },
+    methods: {
+        getColor(a) {
+            if (!this.finished) return 'teal';
+            return a.correct ? 'green' : 'red';
+        },
+        getClass(a) {
+            if (!this.finished) return [];
+            return a.correct ? ['correct-answer'] : [];
+        }
     },
     watch: {
         chosenAnswer(nval, oval) {

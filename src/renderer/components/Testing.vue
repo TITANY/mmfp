@@ -28,6 +28,7 @@
                                 :question="test.question"
                                 :answers="test.answers"
                                 :value="getAnswer(i)"
+                                :finished="finished"
                                 @input="setAnswer(i, $event)"
                             ></component>
                         </template>
@@ -107,12 +108,22 @@ const prepareTestAnswers = testDescription => {
     );
 
     // all correct answers should be shown
-    let shownAnswers = correctAnswersIndexes.map(i => answers[i]);
+    let shownAnswers = correctAnswersIndexes.map(i => ({
+        label: answers[i],
+        correct: true
+    }));
     // not less than total correct answers count
     const answersCount = Math.max(shownAnswers.length, Math.floor(Math.random() * (max - min)) + min);
     // how many incorrect answers we should include (not more than we have at total)
     const n = Math.min(answersCount - shownAnswers.length, incorrectAnswers.length);
-    shownAnswers = shownAnswers.concat(incorrectAnswers.slice(0, n));
+    shownAnswers = shownAnswers.concat(
+        incorrectAnswers
+            .slice(0, n)
+            .map(label => ({
+                label,
+                correct: false
+            }))
+    );
     return shuffle(shownAnswers);
 };
 
@@ -129,6 +140,9 @@ export default {
                 changedBy: null,
                 changedAt: null
             },
+
+            finished: false,
+            results: [],
 
             loaded: false,
             loading: false,
@@ -188,7 +202,9 @@ export default {
             this.answers.splice(i, 1, a);
         },
 
-        checkResults() {},
+        checkResults() {
+            this.finished = true;
+        },
 
         getComponentNameFor(test) {
             return componentNames[test.type] || 'unknown-test-type';
@@ -211,3 +227,10 @@ export default {
     )
 };
 </script>
+
+<style lang="stylus">
+.correct-answer label
+    color: #4caf50 !important
+    font-weight: bold
+</style>
+

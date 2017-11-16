@@ -4,11 +4,12 @@
     <v-checkbox
         v-for="(answer, j) in answers"
         v-model="chosenAnswer"
-        :label="answer"
+        :label="answer.label"
         :value="j"
-        color="teal"
+        :color="getColor(answer)"
+        :class="getClass(answer)"
         hide-details
-        :key="j + '_' + answer"
+        :key="j + '_' + answer.label"
     ></v-checkbox>
 </div>
 </template>
@@ -21,13 +22,26 @@ export default {
     props: {
         'value': Array,
         'question': String,
-        'answers': Array
+        'answers': Array,
+        'finished': Boolean
     },
     data() {
         console.log(JSON.stringify(this.value));
         return {
             chosenAnswer: this.value
         };
+    },
+    methods: {
+        getColor(a) {
+            if (this.finished) {
+                return a.correct ? 'green' : 'red';
+            }
+            return 'teal';
+        },
+        getClass(a) {
+            if (!this.finished) return [];
+            return a.correct ? ['correct-answer'] : [];
+        }
     },
     watch: {
         chosenAnswer(nval, oval) {
