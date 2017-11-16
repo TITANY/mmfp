@@ -55,6 +55,8 @@
 <script>
 import shuffle from 'lodash/shuffle';
 import zipWith from 'lodash/zipWith';
+import diff from 'lodash/difference';
+import intersect from 'lodash/intersection';
 import { topics } from '../../files';
 import components from './tests';
 
@@ -76,7 +78,6 @@ const testsParsers = {
     }
 };
 
-/* eslint-disable no-unused-vars */
 const checkTypes = {
     simple: (given, correct, { win, lose }) => {
         if (given.length !== correct.length) return lose;
@@ -87,6 +88,19 @@ const checkTypes = {
                 return lose;
         }
         return win;
+    },
+
+    // eslint-disable-next-line camelcase 
+    vdist: (given, correct, { match, false_match, false_mismatch = false_match }) => {
+        const falseMatches = diff(given, correct);
+        const falseMismatches = diff(correct, given);
+        const matches = intersect(correct, given);
+
+        return (
+            false_match    * falseMatches.length +      // eslint-disable-line camelcase, no-multi-spaces
+            false_mismatch * falseMismatches.length +   // eslint-disable-line camelcase, no-multi-spaces
+            match          * matches.length             // eslint-disable-line camelcase, no-multi-spaces
+        );
     }
 };
 

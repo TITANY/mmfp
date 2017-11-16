@@ -38,8 +38,8 @@
                 "Антипротон"
             ],
             "await": [0, 1, 2],
-            "check_type": "simple",
-            "points": { "win": 1, "lose": 0 },
+            "check_type": "vdist",
+            "points": { "match": 1, "false_match": -1, "false_mismatch": 0 },
             "question": "Лептоны?",
             "shown_answers": { "min": 5, "max": 8 },
             "type": "multiple"
