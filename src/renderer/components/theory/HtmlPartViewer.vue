@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import path from 'path';
 import $ from 'jquery';
 
 // some black magic with importing d3 and functionPlot
@@ -26,6 +27,9 @@ export default {
         'content': {
             type: String,
             default: 'Ошибка загрузки теории!'
+        },
+        'path': {
+            type: String
         }
     },
 
@@ -64,6 +68,18 @@ export default {
 
             // mathjax
             window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub]);
+
+            // images
+            const vm = this;
+            $content.find('img').each(function () {
+                const $this = $(this);
+                if ($this.attr('data-processed') !== 'true') {
+                    $this.attr('data-processed', 'true');
+                    const src = $.trim($this.attr('src'));
+                    $this.attr('data-src', src);
+                    $this.attr('src', path.join(vm.path, src));
+                }
+            });
 
             this.scriptsParsed = true;
         }

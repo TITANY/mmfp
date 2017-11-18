@@ -8,7 +8,11 @@
     "theory": {
         "file": "content.html",
         "type": "html_part",
-        "check": "..."
+        "check": "...",
+        "images": [
+            "images/transformations.png",
+            "images/image2.png"
+        ]
     },
     "tests": {
         "file": "test.ots",

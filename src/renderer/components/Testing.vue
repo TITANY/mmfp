@@ -55,108 +55,19 @@
 </template>
 
 <script>
-import shuffle from 'lodash/shuffle';
+// import shuffle from 'lodash/shuffle';
 import zipWith from 'lodash/zipWith';
-import diff from 'lodash/difference';
-import intersect from 'lodash/intersection';
 import { topics } from '../../files';
 import components from './tests';
 import LoginProtector from './misc/LoginProtector.vue';
+import Test from '../classes/tests/Test';
+import '../classes/tests/OTest';
 
-
-const testsParsers = {
-    'obfuscated_test': content => {
-        const parsed = JSON.parse(content);
-        parsed.meta = {
-            description: parsed.meta.description || '(нет описания)',
-            scores: parsed.meta.scores.sort((a, b) => {
-                if (a.default) return -1;
-                if (b.default) return 1;
-                return a.starts_from - b.starts_from;
-            }),
-            changedBy: parsed.meta.changed_by,
-            changedAt: new Date(parsed.meta.changed_at)
-        };
-        return parsed;
-    }
-};
-
-const checkTypes = {
-    simple: (given, correct, { win, lose }) => {
-        if (given.length !== correct.length) return lose;
-        given.sort();
-        correct.sort();
-        for (let i = 0; i < given.length; i++) {
-            if (given[i] !== correct[i])
-                return lose;
-        }
-        return win;
-    },
-
-    // eslint-disable-next-line camelcase 
-    vdist: (given, correct, { match, false_match, false_mismatch = false_match }) => {
-        const falseMatches = diff(given, correct);
-        const falseMismatches = diff(correct, given);
-        const matches = intersect(correct, given);
-
-        return (
-            false_match    * falseMatches.length +      // eslint-disable-line camelcase, no-multi-spaces
-            false_mismatch * falseMismatches.length +   // eslint-disable-line camelcase, no-multi-spaces
-            match          * matches.length             // eslint-disable-line camelcase, no-multi-spaces
-        );
-    }
-};
 
 const componentNames = {
     single: 'test-radio-group',
     multiple: 'test-checkboxes'
 };
-
-const prepareTestAnswers = testDescription => {
-    const answers = testDescription.answers.map((label, id) => ({
-        label,
-        id
-    }));
-    const { min, max } = testDescription.shown_answers;
-
-    // extracting correct answers
-    let correctAnswersIndexes = [];
-    if (testDescription.type === 'single') {
-        correctAnswersIndexes.push(testDescription.await);
-    } else {
-        correctAnswersIndexes = testDescription.await.slice();
-    }
-    // and incorrect ones (shuffled to randomize their pick)
-    const incorrectAnswers = shuffle(
-        answers
-            .filter(
-                (_, i) => !correctAnswersIndexes.includes(i)
-            )
-    );
-
-    // all correct answers should be shown
-    let shownAnswers = correctAnswersIndexes.map(i => ({
-        label: answers[i].label,
-        id: answers[i].id,
-        correct: true
-    }));
-    // not less than total correct answers count
-    const answersCount = Math.max(shownAnswers.length, Math.floor(Math.random() * (max - min)) + min);
-    // how many incorrect answers we should include (not more than we have at total)
-    const n = Math.min(answersCount - shownAnswers.length, incorrectAnswers.length);
-    shownAnswers = shownAnswers.concat(
-        incorrectAnswers
-            .slice(0, n)
-            .map(({label, id}) => ({
-                label,
-                id,
-                correct: false
-            }))
-    );
-    return shuffle(shownAnswers);
-};
-
-const wrapIntoArrayIf = (condition, v) => condition ? [v] : v;
 
 export default {
     name: 'testing',
@@ -208,24 +119,18 @@ export default {
             return topics.get(dirname)
                 .then(topic => topic.tests())
                 .then(tests => {
-                    if (tests.type in testsParsers) {
-                        const parsed = testsParsers[tests.type](tests.content);
-                        this.tests = parsed.content.map(t => {
-                            t.answers = prepareTestAnswers(t);
-                            return t;
-                        });
-                        this.answers = parsed.content.map(t => ({
-                            // default answers for types
-                            'single': () => -1,
-                            'multiple': () => []
-                        })[t.type]());
-                        this.meta = parsed.meta;
-                    }
+                    const test = Test.read(tests.type, tests.content);
+                    const rendered = test.render();
+                    this.tests = rendered.content;
+                    this.meta = rendered.meta;
+                    this._test = test; // not reactive
+                    this.answers = this.tests.map(q => q.initialAnswer);
 
                     this.loading = false;
                     this.loaded = true;
                 })
                 .catch(error => {
+                    console.error(error);
                     this.error = error.toString();
                     this.loaded = false;
                     this.loading = false;
@@ -242,38 +147,14 @@ export default {
         },
 
         checkResults() {
-            const results = zipWith(this.tests, this.answers, (test, answers) => {
-                const isSingle = test.type === 'single';
-                const
-                    given = wrapIntoArrayIf(isSingle, answers),
-                    expected = wrapIntoArrayIf(isSingle, test.await);
-
-                const checker = checkTypes[test.check_type];
-
-                if (checker) {
-                    const score = checker(given, expected, test.points);
-                    return score;
-                } else {
-                    throw new TypeError('Unknown test type: ' + test.check_type);
-                }
+            const answers = zipWith(this.tests, this.answers, (test, answers) => {
+                const uuid = test.uuid;
+                const shown = test.answers.map(a => a.id);
+                const given = answers;
+                return { shown, given, uuid };
             });
 
-            const score = results.reduce((sum, i) => sum + i, 0);
-
-            const result = { title: null, score };
-            for (let i = 0; i < this.meta.scores.length; i++) {
-                const s = this.meta.scores[i];
-                if (s.default) {
-                    result.title = s.title;
-                    continue;
-                } else {
-                    if (s.starts_from > score) {
-                        break;
-                    } else {
-                        result.title = s.title;
-                    }
-                }
-            }
+            const result = this._test.check(answers);
 
             this.$store.commit('finishTests', { result });
         },

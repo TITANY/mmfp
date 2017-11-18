@@ -6,6 +6,16 @@
             { "title": "Сойдёт", "starts_from": 1 },
             { "title": "Великолепно", "starts_from": 2 }
         ],
+        "groups": [
+            {
+                "label": "Group 1",
+                "show": { "min": 1, "max": 2 }
+            },
+            {
+                "label": "Group 2",
+                "show": { "all": true }
+            }
+        ],
         "changed_by": "bob",
         "changed_at": "2017-11-15T20:36:41.964Z"
     },
@@ -24,7 +34,8 @@
             "points": { "win": 1, "lose": 0 },
             "question": "Какого цвета учебник?",
             "shown_answers": { "min": 4, "max": 4 },
-            "type": "single"
+            "type": "single",
+            "group": 0
         },
         {
             "answers": [
@@ -42,7 +53,49 @@
             "points": { "match": 1, "false_match": -1, "false_mismatch": 0 },
             "question": "Лептоны?",
             "shown_answers": { "min": 5, "max": 8 },
-            "type": "multiple"
+            "shown_correct": { "min": 2, "max": 3 },
+            "type": "multiple",
+            "group": 0
+        },
+        {
+            "answers": [ "1", "2", "3" ],
+            "await": 1,
+            "check_type": "simple",
+            "points": { "win": 1, "lose": 0 },
+            "question": "G1 q1",
+            "shown_answers": { "all": true },
+            "type": "single",
+            "group": 0
+        },
+        {
+            "answers": [ "1", "2", "3" ],
+            "await": 1,
+            "check_type": "simple",
+            "points": { "win": 1, "lose": 0 },
+            "question": "G1 q2",
+            "shown_answers": { "all": true },
+            "type": "single",
+            "group": 0
+        },
+        {
+            "answers": [ "1", "2", "3" ],
+            "await": 1,
+            "check_type": "simple",
+            "points": { "win": 1, "lose": 0 },
+            "question": "G2 q1",
+            "shown_answers": { "all": true },
+            "type": "single",
+            "group": 1
+        },
+        {
+            "answers": [ "1", "2", "3" ],
+            "await": 1,
+            "check_type": "simple",
+            "points": { "win": 1, "lose": 0 },
+            "question": "G2 q2",
+            "shown_answers": { "all": true },
+            "type": "single",
+            "group": 1
         }
     ]
 }

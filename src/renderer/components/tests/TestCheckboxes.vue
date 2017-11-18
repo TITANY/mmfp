@@ -26,7 +26,6 @@ export default {
         'finished': Boolean
     },
     data() {
-        console.log(JSON.stringify(this.value));
         return {
             chosenAnswer: this.value
         };

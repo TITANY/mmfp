@@ -17,6 +17,7 @@
                     v-if="loaded && !loading"
                     :is="getComponentName(contentType)"
                     :content="content"
+                    :path="contentPath"
                     :content-type="contentType"
                 ></component>
             </v-card-text>
@@ -52,6 +53,7 @@ export default {
             loading: false,
             content: null,
             contentType: null,
+            contentPath: '',
             checked: true
         };
     },
@@ -77,11 +79,12 @@ export default {
             this.loading = true;
             this.loaded = false;
             return topics.get(dirname)
-                .then(topic => topic.theory())
-                .then(theory => {
+                .then(topic => topic.theory().then(t => [topic, t]))
+                .then(([topic, theory]) => {
                     this.content = theory.content;
                     this.contentType = theory.type;
                     this.checked = theory.checked;
+                    this.contentPath = topic.path;
 
                     this.loading = false;
                     this.loaded = true;
