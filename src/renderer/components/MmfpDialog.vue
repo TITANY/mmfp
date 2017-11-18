@@ -72,12 +72,10 @@ export default {
     },
     methods: {
         onDialogInput: function (input) {
-            console.log('input', input);
             this.$emit('input', input);
             this.$emit('result', false);
         },
         onAction: function (action) {
-            console.log(action);
             this.$emit('result', action.action);
             if (action.closes) {
                 this.$emit('input', false);
@@ -87,7 +85,6 @@ export default {
     watch: {
         value: function (nval) {
             this.dialog = nval;
-            console.log(this.width);
         }
     }
 };

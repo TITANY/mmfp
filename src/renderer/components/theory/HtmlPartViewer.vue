@@ -64,6 +64,8 @@ export default {
 
             // mathjax
             window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub]);
+
+            this.scriptsParsed = true;
         }
     },
 
@@ -74,6 +76,11 @@ export default {
     },
     mounted() {
         this.parseScripts();
+    },
+    activated() {
+        if (!this.scriptsParsed) {
+            this.parseScripts();
+        }
     }
 };
 </script>

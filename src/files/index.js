@@ -11,7 +11,6 @@ export const topics = {
         return mkdir(TOPICS_DIR)
             .then(() => readDir(TOPICS_DIR))
             .then(dirs => Promise.all(dirs.map(dir => {
-                console.log('DIR:', dir);
                 const topicJson = path.resolve(TOPICS_DIR, dir, TOPIC_JSON);
                 return readJson(topicJson)
                     .then(topic => ({
