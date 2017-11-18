@@ -8,29 +8,32 @@
             >
                 <v-list>
                     <template v-for="(item, i) in sidemenu">
-                        <v-list-tile
-                            v-if="item.type === 'item'"
-                            
-                            :to="item.to || '/dummy'"
-                            :key="i"
-                            @click.native="item.action && sidemenuAction(item.action)"
-                            
-                        >
-                            <v-list-tile-action>
-                                <v-icon v-html="item.icon"></v-icon>
-                            </v-list-tile-action>
-                            <v-list-tile-content>
-                                <v-list-tile-title v-text="item.label"></v-list-tile-title>
-                            </v-list-tile-content>
-                        </v-list-tile>
+                        <v-slide-y-transition mode="out-in">
+                            <v-list-tile
+                                v-if="item.type === 'item'"
+                                
+                                :to="item.to || '/dummy'"
+                                :key="i + '_' + item.to"
+                                @click.native="item.action && sidemenuAction(item.action)"
+                                
+                            >
+                                <v-list-tile-action>
+                                    <v-icon v-html="item.icon"></v-icon>
+                                </v-list-tile-action>
+                                <v-list-tile-content>
+                                    <v-list-tile-title v-text="item.label"></v-list-tile-title>
+                                </v-list-tile-content>
+                            </v-list-tile>
 
-                        <component
-                            v-if="item.type === 'component'"
-                            :is="item.component"
-                            v-bind="getData(item.data)"
-                        >
-                            {{ item.content || '' }}
-                        </component>
+                            <component
+                                v-if="item.type === 'component'"
+                                :is="item.component"
+                                :key="i + '_' + item.component"
+                                v-bind="getData(item.data)"
+                            >
+                                {{ item.content || '' }}
+                            </component>
+                        </v-slide-y-transition>
                     </template>
                 </v-list>
             </v-navigation-drawer>
@@ -111,11 +114,6 @@ export default {
         right: true,
         title: 'Математическое моделирование физических процессов',
 
-        user: {
-            name: null,
-            loggedIn: false
-        },
-
         dialogs: [],
 
         preSelectedTopic: null,
@@ -138,6 +136,10 @@ export default {
 
         selectedTopic() {
             return this.$store.selectedTopic;
+        },
+
+        user() {
+            return this.$store.state.user;
         }
     },
     methods: {

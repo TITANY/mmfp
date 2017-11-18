@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import { protect } from '../utils/protect';
 
 
 Vue.use(Router);
@@ -25,21 +24,11 @@ export default new Router({
         {
             path: '/testing',
             name: 'testing',
-            redirect: protect('testing-real')
-        },
-        {
-            path: '/testing-real',
-            name: 'testing-real',
             component: require('@/components/Testing')
         },
         {
             path: '/model',
             name: 'model',
-            redirect: protect('model-real')
-        },
-        {
-            path: '/model-real',
-            name: 'model-real',
             component: require('@/components/Model')
         },
         {

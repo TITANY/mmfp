@@ -7,7 +7,14 @@ export default () => new Store({
         tests: {
             finished: false,
             result: null
-        }
+        },
+
+        user: {
+            loggedIn: false,
+            name: null
+        },
+
+        settings: {}
     },
 
     mutations: {
@@ -19,6 +26,13 @@ export default () => new Store({
             state.tests = {
                 finished: true,
                 result
+            };
+        },
+
+        logIn(state, { name }) {
+            state.user = {
+                loggedIn: true,
+                name
             };
         }
     }

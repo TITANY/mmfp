@@ -1,55 +1,57 @@
 <template>
-    <v-layout row wrap justify-center>
-        <v-flex xs10 ossfet-xs1>
-            <v-card>
-                <v-card-title class="headline">Тестирование</v-card-title>
-                <v-card-text>
-                    <p v-if="error" class="red--text">{{ error }}</p>
-                    <p v-if="!loaded && !loading" class="center--text">
-                        Выберите тему, нажав на иконку списка в панели сверху.
-                    </p>
-                    <div v-if="loading">
-                        <p>Загрузка теста...</p>
-                        <v-progress-circular indeterminate color="teal"></v-progress-circular>
-                    </div>
-                    <template v-if="loaded && !loading">
-                        <div class="pb-3">
-                            <div>{{ meta.description }}</div>
-                            <div><b>Автор:</b> {{ meta.changedBy }}</div>
-                            <div><b>Создан:</b> {{ meta.changedAt.toLocaleString() }}</div>
+    <login-protector>
+        <v-layout row wrap justify-center>
+            <v-flex xs10 ossfet-xs1>
+                <v-card>
+                    <v-card-title class="headline">Тестирование</v-card-title>
+                    <v-card-text>
+                        <p v-if="error" class="red--text">{{ error }}</p>
+                        <p v-if="!loaded && !loading" class="center--text">
+                            Выберите тему, нажав на иконку списка в панели сверху.
+                        </p>
+                        <div v-if="loading">
+                            <p>Загрузка теста...</p>
+                            <v-progress-circular indeterminate color="teal"></v-progress-circular>
                         </div>
+                        <template v-if="loaded && !loading">
+                            <div class="pb-3">
+                                <div>{{ meta.description }}</div>
+                                <div><b>Автор:</b> {{ meta.changedBy }}</div>
+                                <div><b>Создан:</b> {{ meta.changedAt.toLocaleString() }}</div>
+                            </div>
 
-                        <v-alert color="info" icon="info" :value="finished" v-if="finished">
-                            <div>Результат: {{ testResult.title }}</div>
-                            <div>Баллы: {{ testResult.score }}</div>
-                        </v-alert>
-                        
-                        <template
-                            v-for="(test, i) in tests"
-                        >
-                            <v-divider></v-divider>
-                            <component
-                                :is="getComponentNameFor(test)"
-                                :question="test.question"
-                                :answers="test.answers"
-                                :value="getAnswer(i)"
-                                :finished="finished"
-                                @input="setAnswer(i, $event)"
-                            ></component>
+                            <v-alert color="info" icon="info" :value="finished" v-if="finished">
+                                <div>Результат: {{ testResult.title }}</div>
+                                <div>Баллы: {{ testResult.score }}</div>
+                            </v-alert>
+                            
+                            <template
+                                v-for="(test, i) in tests"
+                            >
+                                <v-divider></v-divider>
+                                <component
+                                    :is="getComponentNameFor(test)"
+                                    :question="test.question"
+                                    :answers="test.answers"
+                                    :value="getAnswer(i)"
+                                    :finished="finished"
+                                    @input="setAnswer(i, $event)"
+                                ></component>
+                            </template>
                         </template>
-                    </template>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                        v-if="loaded && !loading"
-                        class="teal white--text"
-                        @click="checkResults"
-                    >Закончить тестирование</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-flex>
-    </v-layout>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            v-if="loaded && !loading"
+                            class="teal white--text"
+                            @click="checkResults"
+                        >Закончить тестирование</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-flex>
+        </v-layout>
+    </login-protector>
 </template>
 
 <script>
@@ -59,6 +61,7 @@ import diff from 'lodash/difference';
 import intersect from 'lodash/intersection';
 import { topics } from '../../files';
 import components from './tests';
+import LoginProtector from './misc/LoginProtector.vue';
 
 
 const testsParsers = {
@@ -291,7 +294,9 @@ export default {
         }
     },
     components: Object.assign(
-        {},
+        {
+            LoginProtector
+        },
         components
     )
 };
