@@ -2,6 +2,7 @@
     <div id="app">
         <v-app>
             <v-navigation-drawer
+                fixed
                 clipped
                 app
                 v-model="drawer"
@@ -53,36 +54,34 @@
                 <v-btn icon @click.native="openSettings"><v-icon>settings</v-icon></v-btn>
 
             </v-toolbar>
-            <main app>
-                <v-content>
-                    <v-container fluid>
-                        <v-slide-y-transition mode="out-in">
-                            <keep-alive>
-                                <router-view></router-view>
-                            </keep-alive>
-                        </v-slide-y-transition>
-                        <mmfp-dialog
-                            v-for="(d, i) in dialogs"
-                            :key="i"
-                            v-model="d.show"
-                            :actions="d.actions"
-                            :title="d.showTitle"
-                            :persistent="d.persistent"
-                            :width="d.width"
-                            @result="onDialogResult(i, $event)"
-                        >
-                            <component v-if="d.isComponent" :is="d.componentName" v-bind="this[d.bind]"></component>
-                            <div v-else v-text="d.content"></div>
-                            <div
-                                v-if="d.showTitle"
-                                v-text="d.title"
-                                slot="title"
-                                class="headline"
-                            ></div>
-                        </mmfp-dialog>
-                    </v-container>
-                </v-content>
-            </main>
+            <v-content app>
+                <v-container fluid>
+                    <v-slide-y-transition mode="out-in">
+                        <keep-alive>
+                            <router-view></router-view>
+                        </keep-alive>
+                    </v-slide-y-transition>
+                    <mmfp-dialog
+                        v-for="(d, i) in dialogs"
+                        :key="i"
+                        v-model="d.show"
+                        :actions="d.actions"
+                        :title="d.showTitle"
+                        :persistent="d.persistent"
+                        :width="d.width"
+                        @result="onDialogResult(i, $event)"
+                    >
+                        <component v-if="d.isComponent" :is="d.componentName" v-bind="this[d.bind]"></component>
+                        <div v-else v-text="d.content"></div>
+                        <div
+                            v-if="d.showTitle"
+                            v-text="d.title"
+                            slot="title"
+                            class="headline"
+                        ></div>
+                    </mmfp-dialog>
+                </v-container>
+            </v-content>
             <v-footer fixed app dark class="teal lighten-2">
                 <v-spacer></v-spacer>
                 <span class="white--text">&copy; 2017, TITANY</span>

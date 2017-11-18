@@ -5,7 +5,7 @@
     absolute
     @input="onDialogInput"
     persistent
-    :width="width"
+    max-width="750px"
 >
     <v-card>
         <v-card-title v-if="title">
