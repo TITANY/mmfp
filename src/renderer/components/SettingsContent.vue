@@ -14,7 +14,14 @@
         <v-card>
             <v-card-title class="headline">Настройки внешнего вида</v-card-title>
             <v-card-text>
-                Настройки внешнего вида...
+                <v-select
+                    :items="availableZooms"
+                    v-model="zoom"
+                    prepend-icon="search"
+                    label="Масштаб интерфейса"
+                    item-text="label"
+                    item-value="value"
+                ></v-select>
             </v-card-text>
         </v-card>
     </v-expansion-panel-content>
@@ -40,11 +47,35 @@
 </template>
 
 <script>
+import { webFrame } from 'electron';
+
 export default {
     name: 'settings-content',
     // props: 'settings',
     data() {
+        console.log(webFrame.getZoomFactor());
         return {};
+    },
+
+    computed: {
+        zoom: {
+            get() {
+                return webFrame.getZoomFactor();
+            },
+            set(nval) {
+                webFrame.setZoomFactor(nval);
+            }
+        },
+
+        availableZooms() {
+            return new Array(Math.floor((300 - 100) / 20) + 1) // 100..300 step 20
+                .fill(null)
+                .map((_, i) => i * 20 + 100)
+                .map(z => ({
+                    label: z + '%',
+                    value: z / 100
+                }));
+        }
     }
 };
 </script>
