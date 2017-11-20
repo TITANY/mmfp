@@ -10,9 +10,16 @@
 
         <v-flex offset-xs2>
             <div>
-                Тестирование <b class="green--text">пройдено</b>
-                <v-icon class="green--text">done</v-icon>
+                Тестирование
+                <b v-if="test.finished" class="green--text">пройдено</b>
+                <b v-else class="red--text">не пройдено</b>
             </div>
+            <v-slide-y-transition mode="out-in">
+                <div v-if="test.finished">
+                    Отметка: <b>{{ test.result.title }}</b>
+                    <i>(баллы: {{ test.result.score }})</i>
+                </div>
+            </v-slide-y-transition>
         </v-flex>
     </v-layout>
 </v-container>
@@ -23,7 +30,9 @@ export default {
     name: 'user-info',
     props: ['user'],
     computed: {
-        // user: function () { return this.data[0]; }
+        test() {
+            return this.$store.state.tests;
+        }
     }
 };
 </script>
