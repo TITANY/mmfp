@@ -1,8 +1,22 @@
+const fs = require('fs');
 const { app } = require('electron');
 
 const fns = {
     'quit': () => {
         app.quit();
+    },
+
+    'listFiles': () => {
+        return new Promise((resolve, reject) => {
+            const cwd = process.cwd();
+            fs.readdir(cwd, (err, files) => {
+                if (err) reject(err);
+                resolve({
+                    dir: cwd,
+                    files
+                });
+            });
+        });
     }
 };
 

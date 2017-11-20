@@ -5,6 +5,7 @@
     absolute
     @input="onDialogInput"
     persistent
+    max-width="750px"
 >
     <v-card>
         <v-card-title v-if="title">
@@ -42,6 +43,10 @@ export default {
         },
         'title': {
             default: false
+        },
+        'width': {
+            type: String,
+            default: '25%'
         }
     },
     data: () => ({
@@ -67,12 +72,10 @@ export default {
     },
     methods: {
         onDialogInput: function (input) {
-            console.log('input', input);
             this.$emit('input', input);
             this.$emit('result', false);
         },
         onAction: function (action) {
-            console.log(action);
             this.$emit('result', action.action);
             if (action.closes) {
                 this.$emit('input', false);

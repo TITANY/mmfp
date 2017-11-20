@@ -3,11 +3,21 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import cmd from './cmd';
 
+
 ipcMain.on('cmd', (event, arg) => {
     try {
-        const reply = cmd(arg.cmd, arg.params);
+        let reply = cmd(arg.cmd, arg.params);
+        console.error(reply);
         if (reply !== void 0) {
-            event.sender.send('cmd', { error: false, reply });
+            if (!(reply instanceof Promise)) {
+                if (reply instanceof Error)
+                    reply = Promise.reject(reply);
+                else
+                    reply = Promise.resolve(reply);
+            }
+            reply
+                .then(reply => event.sender.send('cmd', { error: false, reply }))
+                .catch(err => event.sender.send('cmd', { error: true, reply: err }));
         }
     } catch (err) {
         console.error(err);
