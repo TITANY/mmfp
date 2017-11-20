@@ -7,6 +7,7 @@
         :label="answer.label"
         :value="answer.id"
         :class="getClass(answer)"
+        color="teal"
         :disabled="finished"
         hide-details
         :key="j + '_' + answer.label"
@@ -31,12 +32,6 @@ export default {
         };
     },
     methods: {
-        getColor(a) {
-            if (this.finished) {
-                return a.correct ? 'green' : 'red';
-            }
-            return 'teal';
-        },
         getClass(a) {
             if (!this.finished) return [];
             return a.correct ? ['correct-answer'] : [];

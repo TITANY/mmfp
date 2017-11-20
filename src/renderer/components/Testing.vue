@@ -25,19 +25,46 @@
                                 <div>Баллы: {{ testResult.score }}</div>
                             </v-alert>
                             
-                            <template
-                                v-for="(test, i) in tests"
-                            >
-                                <v-divider></v-divider>
-                                <component
-                                    :is="getComponentNameFor(test)"
-                                    :question="test.question"
-                                    :answers="test.answers"
-                                    :value="getAnswer(i)"
-                                    :finished="finished"
-                                    @input="setAnswer(i, $event)"
-                                ></component>
-                            </template>
+                            <!-- Tests stepper -->
+                            <v-stepper v-model="stepper" non-linear class="mb-3">
+                                <v-stepper-header>
+                                    <template v-for="(test, i) in tests">
+                                        <v-divider v-if="i > 0"></v-divider>
+                                        <v-stepper-step
+                                            editable
+                                            :step="i + 1"
+                                            :key="test.uuid"
+                                        ></v-stepper-step>
+                                    </template>
+                                </v-stepper-header>
+                                <v-stepper-items>
+                                    <v-stepper-content
+                                        v-for="(test, i) in tests"
+                                        :key="test.uuid"
+                                        :step="i + 1"
+                                    >
+                                        <component
+                                            :is="getComponentNameFor(test)"
+                                            :question="test.question"
+                                            :answers="test.answers"
+                                            :value="getAnswer(i)"
+                                            :finished="finished"
+                                            @input="setAnswer(i, $event)"
+                                        ></component>
+                                    </v-stepper-content>
+                                </v-stepper-items>
+                            </v-stepper>
+                            <v-layout row>
+                                <v-btn class="teal white--text" @click="stepBack">
+                                    <v-icon>navigate_before</v-icon>
+                                    Предыдущий
+                                </v-btn>
+                                <v-spacer></v-spacer>
+                                <v-btn class="teal white--text" @click="stepFront">
+                                    Следующий
+                                    <v-icon>navigate_next</v-icon>
+                                </v-btn>
+                            </v-layout>
                         </template>
                     </v-card-text>
                     <v-card-actions>
@@ -87,7 +114,8 @@ export default {
 
             loaded: false,
             loading: false,
-            error: false
+            error: false,
+            stepper: 0
         };
     },
 
@@ -128,6 +156,7 @@ export default {
 
                     this.loading = false;
                     this.loaded = true;
+                    this.stepper = 1;
                 })
                 .catch(error => {
                     console.error(error);
@@ -161,6 +190,17 @@ export default {
 
         getComponentNameFor(test) {
             return componentNames[test.type] || 'unknown-test-type';
+        },
+
+        stepBack() {
+            this.stepper--;
+            if (this.stepper < 1)
+                this.stepper = this.tests.length;
+        },
+        stepFront() {
+            this.stepper++;
+            if (this.stepper > this.tests.length)
+                this.stepper = 1;
         }
     },
     mounted() {
