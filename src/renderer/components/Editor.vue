@@ -35,6 +35,7 @@
     </v-layout>
     <editor-dialog
         :shown="editorOpened"
+        :topic-dir="selectedTopicDir"
         @input="onEditorDialogInput"
     >Редактор</editor-dialog>
 </superuser-protector>
@@ -60,6 +61,13 @@ export default {
         selectedTopicId() {
             if (this.selectedTopic) {
                 return this.selectedTopic.meta.id;
+            }
+            return null;
+        },
+
+        selectedTopicDir() {
+            if (this.selectedTopic) {
+                return this.selectedTopic.dir;
             }
             return null;
         }

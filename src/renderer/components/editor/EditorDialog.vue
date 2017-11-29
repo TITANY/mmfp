@@ -12,10 +12,17 @@
                 <v-btn icon @click.native="close" dark>
                     <v-icon>close</v-icon>
                 </v-btn>
-                <v-toolbar-title><slot></slot></v-toolbar-title>
+                <v-toolbar-title>
+                    <slot></slot>
+                </v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
-                    <v-btn dark flat @click.native="save">Сохранить</v-btn>
+                    <v-btn
+                        dark
+                        flat
+                        :loading="loading"
+                        @click.native="save"
+                    >Сохранить</v-btn>
                 </v-toolbar-items>
             </v-toolbar>
 
@@ -38,13 +45,18 @@
                 </v-tabs-item>
             </v-tabs-bar>
 
-            <v-tabs-items>
+            <v-tabs-items v-if="!loading">
                 <v-tabs-content
                     key="topic-tab"
                     id="topic"
                 >
                     <v-card flat>
-                        <v-card-text>Общее</v-card-text>
+                        <v-card-text>
+                            <info-tab-content
+                                :value="testInfo"
+                                @input="onInfoTabInput"
+                            ></info-tab-content>
+                        </v-card-text>
                     </v-card>
                 </v-tabs-content>
 
@@ -72,14 +84,28 @@
 </v-dialog>
 </template>
 <script>
+import { topics } from '../../../files';
+import InfoTabContent from './InfoTabContent.vue';
+
+
 export default {
     name: 'editor-tabs',
     props: {
-        'shown': Boolean
+        'shown': Boolean,
+        'topicDir': String
     },
 
     data() {
-        return {};
+        return {
+            loading: true,
+
+            testInfo: {
+                id: '',
+                name: '',
+                description: '',
+                category: ''
+            }
+        };
     },
 
     methods: {
@@ -89,9 +115,37 @@ export default {
 
         close() {
             this.$emit('input', false);
+        },
+
+        load() {
+            if (this.topicDir === null) return;
+
+            this.loading = true;
+            return topics.get(this.topicDir)
+                .then(topic => {
+                    this.loading = false;
+                });
+        },
+
+        onInfoTabInput(ev) {
+            Object.assign(this.testInfo, ev);
         }
     },
 
-    components: {}
+    mounted() {
+        this.load();
+    },
+
+    watch: {
+        topicDir(nval, oval) {
+            if (nval !== oval) {
+                this.load();
+            }
+        }
+    },
+
+    components: {
+        InfoTabContent
+    }
 };
 </script>
