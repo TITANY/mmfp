@@ -53,7 +53,7 @@
                     <v-card flat>
                         <v-card-text>
                             <info-tab-content
-                                :value="testInfo"
+                                :value="topicInfo"
                                 @input="onInfoTabInput"
                             ></info-tab-content>
                         </v-card-text>
@@ -74,7 +74,12 @@
                     id="tests"
                 >
                     <v-card flat>
-                        <v-card-text>Тест</v-card-text>
+                        <v-card-text>
+                            <tests-tab-content
+                                :value="tests"
+                                @input="onTestsTabInput"
+                            ></tests-tab-content>
+                        </v-card-text>
                     </v-card>
                 </v-tabs-content>
             </v-tabs-items>
@@ -86,6 +91,7 @@
 <script>
 import { topics } from '../../../files';
 import InfoTabContent from './InfoTabContent.vue';
+import TestsTabContent from './TestsTabContent.vue';
 
 
 export default {
@@ -99,11 +105,23 @@ export default {
         return {
             loading: true,
 
-            testInfo: {
+            topicInfo: {
                 id: '',
                 name: '',
                 description: '',
                 category: ''
+            },
+
+            tests: {
+                type: null,
+                content: null,
+                check: null
+            },
+
+            theory: {
+                type: null,
+                content: null,
+                check: null
             }
         };
     },
@@ -123,12 +141,30 @@ export default {
             this.loading = true;
             return topics.get(this.topicDir)
                 .then(topic => {
+                    this.topicInfo = topic.meta();
+
+                    return Promise.all([
+                        topic.theory(),
+                        topic.tests()
+                    ]);
+                })
+                .then(([theory, tests]) => {
+                    this.theory = theory;
+                    this.tests = tests;
                     this.loading = false;
                 });
         },
 
         onInfoTabInput(ev) {
-            Object.assign(this.testInfo, ev);
+            Object.assign(this.topicInfo, ev);
+        },
+
+        onTestsTabInput(ev) {
+            Object.assign(this.tests, ev);
+        },
+
+        onTheoryTabInput(ev) {
+            Object.assign(this.theory, ev);
         }
     },
 
@@ -145,7 +181,8 @@ export default {
     },
 
     components: {
-        InfoTabContent
+        InfoTabContent,
+        TestsTabContent
     }
 };
 </script>

@@ -33,6 +33,10 @@ export const topics = {
             .then(() => readJson(path.resolve(TOPICS_DIR_ABS, dirname, TOPIC_JSON)))
             .then(topic => {
                 return {
+                    meta() {
+                        return topic.meta;
+                    },
+
                     theory() {
                         return readSection(topic.theory, path.resolve(TOPICS_DIR_ABS, dirname));
                     },
