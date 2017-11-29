@@ -32,7 +32,6 @@
 
 <script>
 import { topics } from '../../files';
-import bus from '../utils/eventbus';
 
 
 const labels = {
@@ -77,12 +76,14 @@ const normalizeTopic = t => ({
 
 export default {
     name: 'topics-list',
-    props: ['topics'],
+    props: {
+        'value': String
+    },
 
     data: () => ({
         cats: [],
         error: false,
-        selected: null
+        selected: this.value
     }),
 
     methods: {
@@ -102,7 +103,7 @@ export default {
         },
 
         selectTopic(topic) {
-            bus.$emit('pre-select-topic', topic.original);
+            this.$emit('input', topic.original);
             this.selected = topic;
         },
 
@@ -127,6 +128,23 @@ export default {
 
     mounted() {
         this.refresh();
+    },
+
+    watch: {
+        value(nval) {
+            for (let i = 0; i < this.cats.length; i++) {
+                const cat = this.cats[i];
+                for (let j = 0; j < cat.content.length; j++) {
+                    const topic = cat.content[j];
+                    if (topic.id === nval) {
+                        this.selected = topic;
+                        return;
+                    }
+                }
+            }
+            // console.error('Cannot find such topic: ', nval);
+            this.selected = null;
+        }
     }
 };
 </script>

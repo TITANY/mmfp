@@ -80,6 +80,21 @@
                             class="headline"
                         ></div>
                     </mmfp-dialog>
+
+                    <mmfp-dialog
+                        v-model="topicsListDialog.shown"
+                        :actions="topicsListDialog.actions"
+                        :title="true"
+                        presistent
+                        width="50%"
+                        @result="onTopicsResult"
+                    >
+                        <div slot="title" class="headline">{{ topicsListDialog.title }}</div>
+                        <topics-list
+                            :value="preselectedId"
+                            @input="onTopicsInput"
+                        ></topics-list>
+                    </mmfp-dialog>
                 </v-container>
             </v-content>
             <v-footer fixed app dark class="teal lighten-2">
@@ -95,7 +110,12 @@ import openLink from './utils/openlink';
 import eventBus from './utils/eventbus';
 import cmd from './utils/cmd';
 import sidemenu from './sidemenu';
-import { createComponent, actionsApplyCancel, confirmation } from './utils/dialogs';
+import {
+    createComponent,
+    confirmation,
+    ACTION_CANCEL,
+    ACTION_APPLY
+} from './utils/dialogs';
 import { changeLoggedIn } from './utils/protect';
 
 import UserInfo from './components/sidemenu/UserInfo';
@@ -116,6 +136,12 @@ export default {
         dialogs: [],
 
         preSelectedTopic: null,
+
+        topicsListDialog: {
+            shown: false,
+            actions: [ ACTION_CANCEL, ACTION_APPLY ],
+            title: 'Список тем'
+        },
 
         settings: {
             logs: []
@@ -140,11 +166,18 @@ export default {
         },
 
         selectedTopic() {
-            return this.$store.selectedTopic;
+            return this.$store.state.selectedTopic;
         },
 
         user() {
             return this.$store.state.user;
+        },
+
+        preselectedId() {
+            if (this.preSelectedTopic === null) {
+                return null;
+            }
+            return this.preSelectedTopic.meta.id;
         }
     },
     methods: {
@@ -192,26 +225,23 @@ export default {
         },
 
         openTopicsList: function () {
-            this.createDialog(
-                actionsApplyCancel(
-                    createComponent(
-                        'topics-list',
-                        { title: 'Список тем' }
-                    )
-                ),
-                result => {
-                    if (result === 'apply') {
-                        if (this.preSelectedTopic === null) return;
-                        const topic = this.preSelectedTopic;
-                        this.preSelectedTopic = null;
-                        this.title = topic.meta.name;
+            this.topicsListDialog.shown = true;
+        },
 
-                        this.$store.commit('selectTopic', { topic });
-                    } else {
-                        this.preSelectedTopic = null;
-                    }
-                }
-            );
+        onTopicsResult(event) {
+            this.topicsListDialog.shown = false;
+            if (event === 'apply') {
+                if (this.preSelectedTopic === null) return;
+                const topic = this.preSelectedTopic;
+                this.title = topic.meta.name;
+
+                this.$store.commit('selectTopic', { topic });
+            } else {
+                this.preSelectedTopic = this.selectedTopic;
+            }
+        },
+        onTopicsInput(event) {
+            this.preSelectedTopic = event;
         },
 
         openSettings: function () {
@@ -229,10 +259,6 @@ export default {
 
         eventBus.$on('navigate', event => {
             this.$router.push(event);
-        });
-
-        eventBus.$on('pre-select-topic', topic => {
-            this.preSelectedTopic = topic;
         });
 
         // non-reactive data

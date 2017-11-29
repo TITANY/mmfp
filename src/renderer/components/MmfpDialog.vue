@@ -50,7 +50,7 @@ export default {
         }
     },
     data: () => ({
-        dialog: true
+        dialog: this.value
     }),
     computed: {
         nActions: function () {
