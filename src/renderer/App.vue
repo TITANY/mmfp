@@ -124,11 +124,17 @@ export default {
     computed: {
         sidemenu: function () {
             const loggedIn = this.user.loggedIn;
+            const su = this.user.superuser;
             return sidemenu.filter(item => {
-                if (item.protected)
+                if (item.superuser) {
+                    return su;
+                }
+                if (item.protected) {
                     return loggedIn;
-                if (item.unknownOnly)
+                }
+                if (item.unknownOnly) {
                     return !loggedIn;
+                }
                 return true;
             });
         },

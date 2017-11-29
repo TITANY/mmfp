@@ -32,6 +32,11 @@ export default new Router({
             component: require('@/components/Model')
         },
         {
+            path: '/editor',
+            name: 'editor',
+            component: require('@/components/Editor')
+        },
+        {
             path: '/dummy',
             beforeEnter: (to, from, next) => {
                 next(Object.assign({}, from));
