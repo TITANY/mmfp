@@ -1,13 +1,103 @@
 <template>
-<div>
-    <v-subheader>Вопросы по теме</v-subheader>
-    <v-divider class="mb-3"></v-divider>
+<v-container grid-list-lg fluid>
+    <v-layout row wrap v-if="loaded">
+        <v-flex xs12 lg4>
+            <v-subheader>Группы вопросов</v-subheader>
+            <v-divider class="mb-3"></v-divider>
 
-    TODO
-</div>
+            <v-list two-line>
+                <template v-for="(g, i) in groups">
+                    <v-list-tile
+                        avatar
+                        :key="i + '_' + g.label"
+                        @click="editGroup(i)"
+                    >
+                        <v-list-tile-content>
+                            <v-list-tile-title>{{ g.label }}</v-list-tile-title>
+                            <v-list-tile-sub-title>Отображать: {{ groupSummary(g.show) }}</v-list-tile-sub-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </template>
+            </v-list>
+
+            <div class="text-xs-right">
+                <v-btn
+                    dark color="teal"
+                    @click="addGroup"
+                ><v-icon>add</v-icon>Добавить группу</v-btn>
+            </div>
+        </v-flex>
+
+        <v-flex xs12 lg8>
+            <v-subheader>Содержимое теста</v-subheader>
+            <v-divider class="mb-3"></v-divider>
+
+            <v-stepper v-model="stepper" non-linear>
+                <v-stepper-header>
+                    <template v-for="(test, i) in tests">
+                        <v-divider v-if="i > 0"></v-divider>
+                        <v-stepper-step
+                            editable
+                            :step="i + 1"
+                            :key="test.uuid"
+                        ></v-stepper-step>
+                    </template>
+                </v-stepper-header>
+                <v-stepper-items>
+                    <v-stepper-content
+                        v-for="(test, i) in tests"
+                        :key="test.uuid"
+                        :step="i + 1"
+                    >
+                        <question-editor
+                            :value="test"
+                        ></question-editor>
+                        <v-divider></v-divider>
+
+                        <component
+                            :is="getComponentNameFor(test)"
+                            question="Выберите верные варианты ответа на вопрос"
+                            :answers="test.answers"
+                            :value="getAnswer(i)"
+                            :finished="false"
+                            @input="setAnswer(i, $event)"
+                        ></component>
+                    </v-stepper-content>
+                </v-stepper-items>
+            </v-stepper>
+
+            <div class="text-xs-right">
+                <v-btn
+                    dark color="teal"
+                    @click="addQuestion"
+                ><v-icon>add</v-icon>Добавить вопрос</v-btn>
+            </div>
+        </v-flex>
+    </v-layout>
+
+    <edit-group-dialog
+        :show="showGroupDialog"
+        :value="selectedGroup"
+        @input="onGroupChanged"
+        @shown="showGroupDialog = $event"
+    ></edit-group-dialog>
+</v-container>
 </template>
 
 <script>
+import Test from '@/classes/tests/Test';
+import '@/classes/tests/OTest';
+
+import components from '../tests';
+import EditGroupDialog from './EditGroupDialog';
+import QuestionEditor from './QuestionEditor';
+
+
+const componentNames = {
+    single: 'test-radio-group',
+    multiple: 'test-checkboxes'
+};
+
 export default {
     name: 'tests-tab-content',
     props: {
@@ -17,7 +107,110 @@ export default {
         }
     },
 
+    data() {
+        return {
+            groups: [{ label: '(default)', show: { all: true } }],
+            tests: [],
+            answers: [],
+            scores: [],
+
+            selectedGroupIndex: -1,
+            showGroupDialog: false,
+
+            stepper: 0,
+            loaded: false
+        };
+    },
+
+    computed: {
+        selectedGroup() {
+            if (this.selectedGroupIndex === -1) {
+                return null;
+            }
+            return this.groups[this.selectedGroupIndex];
+        }
+    },
+
     methods: {
+        groupSummary(shownConfig) {
+            if (shownConfig.all) {
+                return 'все';
+            } else {
+                return `от ${shownConfig.min} до ${shownConfig.max}`;
+            }
+        },
+
+        editGroup(i) {
+            this.selectedGroupIndex = i;
+            this.showGroupDialog = true;
+        },
+
+        addGroup() {
+            this.groups.push({
+                label: 'Группа #' + (this.groups.length + 1),
+                show: { all: true }
+            });
+        },
+
+        onGroupChanged(changes) {
+            this.groups.splice(this.selectedGroupIndex, 1, changes);
+        },
+
+        addQuestion() {},
+
+        load() {
+            const test = Test.read(this.value.type, this.value.content);
+
+            this.groups = test.groups;
+            this.tests = test.content;
+            this.scores = test.scores;
+            this.answers = this.tests.map(q => {
+                const correct = q.correct;
+                if (Array.isArray(correct)) {
+                    return correct.slice();
+                } else {
+                    return correct;
+                }
+            });
+            this.stepper = 1;
+            this.loaded = true;
+
+            this._test = test;
+        },
+
+        getComponentNameFor(test) {
+            return componentNames[test.type] || 'unknown-test-type';
+        },
+
+        getAnswer(i) {
+            return this.answers[i];
+        },
+        setAnswer(i, a) {
+            this.answers.splice(i, 1, a);
+        }
+    },
+
+    components: Object.assign(
+        {
+            EditGroupDialog,
+            QuestionEditor
+        },
+        components
+    ),
+
+    mounted() {
+        this.load();
+    },
+
+    watch: {
+        value: {
+            handler(nval, oval) {
+                if (nval.content !== oval.content || nval.type !== oval.type) {
+                    this.load();
+                }
+            },
+            deep: true
+        }
     }
 };
 </script>
