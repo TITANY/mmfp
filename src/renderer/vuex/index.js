@@ -11,6 +11,7 @@ export default () => new Store({
 
         user: {
             loggedIn: false,
+            superuser: false,
             name: null
         },
 
@@ -29,9 +30,10 @@ export default () => new Store({
             };
         },
 
-        logIn(state, { name }) {
+        logIn(state, { name, superuser = false }) {
             state.user = {
                 loggedIn: true,
+                superuser,
                 name
             };
         }

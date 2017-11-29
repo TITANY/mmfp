@@ -20,10 +20,28 @@
                         ref="usernameTextField"
                         :rules="[value => !!value.length || 'Имя не может быть пустым']"
                     ></v-text-field>
+
+                    <v-text-field
+                        v-show="showPassword"
+                        name="password"
+                        label="Пароль"
+                        v-model="password"
+                        ref="passwordTextField"
+                        prepend-icon="vpn_key"
+                        :append-icon="vis ? 'visibility' : 'visibility_off'"
+                        :append-icon-cb="() => (vis = !vis)"
+                        :type="vis ? 'password' : 'text'"
+                        :rules="[validatePassword]"
+                    ></v-text-field>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer />
-                    <v-btn dark class="teal" @click="logIn">Вход</v-btn>
+                    <v-btn
+                        dark
+                        class="teal"
+                        :loading="loading"
+                        @click="logIn"
+                    >Вход</v-btn>
                 </v-card-actions>
             </v-card>
         </v-flex>
@@ -36,12 +54,22 @@
 </template>
 
 <script>
+import bcrypt from 'bcrypt';
+
+
+const HASH = '$2a$10$b48ov3eZw.xv9Bam8eg7QeR67m/2Tjrr96QGcSEm1RhjImretd4z2';
+
 export default {
     name: 'login-protector',
 
     data: function () {
         return {
-            username: ''
+            username: '',
+            showPassword: false,
+            password: '',
+            wrongPassword: false,
+            loading: false,
+            vis: true
         };
     },
 
@@ -52,13 +80,39 @@ export default {
     },
 
     methods: {
-        logIn: function () {
+        logIn() {
             if (this.username === '') {
                 this.$refs.usernameTextField.validate(true);
                 return;
             }
 
+            if (this.username === 'Admin') {
+                if (this.showPassword) {
+                    this.loading = true;
+                    return bcrypt.compare(this.password, HASH)
+                        .then(result => {
+                            this.loading = false;
+                            if (result) {
+                                this.wrongPassword = false;
+                                this.$store.commit('logIn', { name: this.username, superuser: true });
+                            } else {
+                                this.wrongPassword = true;
+                                this.$refs.passwordTextField.validate(true);
+                            }
+                        });
+                } else {
+                    this.showPassword = true;
+                    return;
+                }
+            }
+
             this.$store.commit('logIn', { name: this.username });
+        },
+
+        validatePassword() {
+            if (this.wrongPassword)
+                return 'Неверный пароль';
+            return true;
         }
     }
 };
