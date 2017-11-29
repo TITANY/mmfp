@@ -16,6 +16,7 @@
                     <v-subheader>Выберите тему для редактирования:</v-subheader>
                     <v-divider></v-divider>
                     <topics-list
+                        :value="selectedTopicId"
                         @input="onTopicSelected"
                     ></topics-list>
                 </v-card-text>
@@ -53,6 +54,15 @@ export default {
             selectedTopic: null,
             editorOpened: false
         };
+    },
+
+    computed: {
+        selectedTopicId() {
+            if (this.selectedTopic) {
+                return this.selectedTopic.meta.id;
+            }
+            return null;
+        }
     },
 
     methods: {
