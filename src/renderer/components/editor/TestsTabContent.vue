@@ -51,12 +51,13 @@
                     >
                         <question-editor
                             :value="test"
+                            @input="onQuestionChanged(i, $event)"
                         ></question-editor>
                         <v-divider></v-divider>
 
                         <component
                             :is="getComponentNameFor(test)"
-                            question="Выберите верные варианты ответа на вопрос"
+                            question="Выберите верные варианты ответа на вопрос:"
                             :answers="test.answers"
                             :value="getAnswer(i)"
                             :finished="false"
@@ -86,6 +87,7 @@
 
 <script>
 import Test from '@/classes/tests/Test';
+import Question from '@/classes/tests/Question';
 import '@/classes/tests/OTest';
 
 import components from '../tests';
@@ -111,7 +113,7 @@ export default {
         return {
             groups: [{ label: '(default)', show: { all: true } }],
             tests: [],
-            answers: [],
+            // answers: [],
             scores: [],
 
             selectedGroupIndex: -1,
@@ -156,6 +158,24 @@ export default {
             this.groups.splice(this.selectedGroupIndex, 1, changes);
         },
 
+        onQuestionChanged(i, changes) {
+            const changeAnswer = changes.type !== this.tests[i].type;
+            Object.assign(this.tests[i], changes);
+            if (changeAnswer) {
+                const newQuestion = Question.create(this.tests[i].serialize());
+                this.tests.splice(i, 1, newQuestion);
+
+                // HACK: that v-stepper behaves strange when the array item changes -_-
+                // so this is important for it to be rendered to user
+                const s = this.stepper;
+                this.stepper = s + 1;
+                setTimeout(() => {
+                    this.stepper = s;
+                }, 50);
+                // this.tests[i] = newQuestion;
+            }
+        },
+
         addQuestion() {},
 
         load() {
@@ -164,14 +184,14 @@ export default {
             this.groups = test.groups;
             this.tests = test.content;
             this.scores = test.scores;
-            this.answers = this.tests.map(q => {
-                const correct = q.correct;
-                if (Array.isArray(correct)) {
-                    return correct.slice();
-                } else {
-                    return correct;
-                }
-            });
+            // this.answers = this.tests.map(q => {
+            //     const correct = q.correct;
+            //     if (Array.isArray(correct)) {
+            //         return correct.slice();
+            //     } else {
+            //         return correct;
+            //     }
+            // });
             this.stepper = 1;
             this.loaded = true;
 
@@ -183,10 +203,10 @@ export default {
         },
 
         getAnswer(i) {
-            return this.answers[i];
+            return this.tests[i].correct;
         },
         setAnswer(i, a) {
-            this.answers.splice(i, 1, a);
+            this.tests[i].correct = a;
         }
     },
 

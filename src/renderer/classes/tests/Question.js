@@ -116,6 +116,20 @@ export default class Question {
             throw new TypeError('Unknown test type: ' + this.checkType);
         }
     }
+
+    serialize() {
+        const data = {
+            answers: this.answers.map(({ label }) => label),
+            check_type: this.checkType,
+            points: this.points,
+            question: this.question,
+            shown_answers: this.shown,
+            shown_correct: this.shownCorrect,
+            type: this.type,
+            'await': this.correct
+        };
+        return data;
+    }
 }
 
 const registry = {};
@@ -133,6 +147,12 @@ Question.create = (data) => {
 //
 
 class SingleQuestion extends Question {
+    constructor(data) {
+        if (typeof data.await !== typeof 0)
+            data.await = -1;
+        super(data);
+    }
+
     isCorrect(id) {
         return this.correct === id;
     }
@@ -146,5 +166,11 @@ class SingleQuestion extends Question {
 Question.register('single', SingleQuestion);
 
 class MultipleQuestion extends Question {
+    constructor(data) {
+        if (!Array.isArray(data.await)) {
+            data.await = [];
+        }
+        super(data);
+    }
 }
 Question.register('multiple', MultipleQuestion);

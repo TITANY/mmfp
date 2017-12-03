@@ -1,5 +1,14 @@
 <template>
 <div>
+    <v-subheader>Общая информация</v-subheader>
+
+    <v-text-field
+        label="Текст вопроса"
+        v-model="question"
+        prepend-icon="help"
+        required
+    ></v-text-field>
+
     <v-select
         :items="qTypesList"
         v-model="qType"
@@ -20,6 +29,7 @@
         required
     ></v-select>
 
+    <v-divider></v-divider>
     <v-subheader>Начисление очков</v-subheader>
 
     <template
@@ -32,8 +42,6 @@
             @input="setScoreValue(s.name, $event)"
         ></v-text-field>
     </template>
-
-    <v-divider></v-divider>
 </div>
 </template>
 
@@ -73,6 +81,7 @@ export default {
         return {
             qType: 'single',
             checkType: 'simple',
+            question: '?',
 
             scores: {}
         };
@@ -93,17 +102,47 @@ export default {
         },
         setScoreValue(name, val) {
             this.scores[name] = val;
-        }
-    },
+        },
 
-    watch: {
-        checkType() {
+        onChanged() {
+            this.$emit('input', {
+                type: this.qType,
+                checkType: this.checkType,
+                question: this.question
+            });
+        },
+        updateLocalValue() {
+            this.qType = this.value.type;
+            this.checkType = this.value.checkType;
+            this.question = this.value.question;
+        },
+
+        updateScores() {
             const scores = this.selectedCheckTypeScores;
             this.scores = scores.reduce((obj, nextScore) => {
                 obj[nextScore.name] = nextScore.defVal;
                 return obj;
             }, {});
         }
+    },
+
+    watch: {
+        checkType() {
+            this.updateScores();
+            this.onChanged();
+        },
+
+        value() {
+            this.updateLocalValue();
+        },
+
+        qType() { this.onChanged(); },
+        question() { this.onChanged(); }
+    },
+
+    mounted() {
+        this.updateLocalValue();
+        // this.updateScores();
     }
 };
 </script>
