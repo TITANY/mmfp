@@ -1,7 +1,8 @@
 import getShown from './shown';
 
 export default class Group {
-    constructor({ label, show }) {
+    constructor({ label, show }, id) {
+        this.id = id;
         this.label = label;
         this.show = show;
         this.content = [];

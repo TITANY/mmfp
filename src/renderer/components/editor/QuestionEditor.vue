@@ -29,6 +29,16 @@
         required
     ></v-select>
 
+    <v-select
+        :items="groupsList"
+        v-model="qGroup"
+        label="Группа"
+        item-text="label"
+        item-value="id"
+        prepend-icon="group_work"
+        required
+    ></v-select>
+
     <v-divider></v-divider>
     <v-subheader>Начисление очков</v-subheader>
 
@@ -74,13 +84,15 @@ const checkTypesList = [
 export default {
     name: 'question-editor',
     props: {
-        value: Object
+        value: Object,
+        groups: Array
     },
 
     data() {
         return {
             qType: 'single',
             checkType: 'simple',
+            qGroup: 0,
             question: '?',
 
             scores: {}
@@ -93,6 +105,10 @@ export default {
 
         selectedCheckTypeScores() {
             return checkTypesList.filter(t => t.type === this.checkType)[0].scores;
+        },
+
+        groupsList() {
+            return this.groups.map(({ label }, id) => ({ label, id }));
         }
     },
 
@@ -108,13 +124,15 @@ export default {
             this.$emit('input', {
                 type: this.qType,
                 checkType: this.checkType,
-                question: this.question
+                question: this.question,
+                group: this.qGroup
             });
         },
         updateLocalValue() {
             this.qType = this.value.type;
             this.checkType = this.value.checkType;
             this.question = this.value.question;
+            this.qGroup = this.value.group.id;
         },
 
         updateScores() {
@@ -137,7 +155,8 @@ export default {
         },
 
         qType() { this.onChanged(); },
-        question() { this.onChanged(); }
+        question() { this.onChanged(); },
+        qGroup() { this.onChanged(); }
     },
 
     mounted() {

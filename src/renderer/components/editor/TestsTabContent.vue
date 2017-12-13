@@ -50,6 +50,7 @@
                         :step="i + 1"
                     >
                         <question-editor
+                            :groups="groups"
                             :value="test"
                             @input="onQuestionChanged(i, $event)"
                         ></question-editor>

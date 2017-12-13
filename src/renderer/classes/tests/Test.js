@@ -17,7 +17,7 @@ export default class Test {
     }) {
         this.description = description;
         this.scores = new Scores(scores);
-        this.groups = groups.map(data => new Group(data));
+        this.groups = groups.map((data, id) => new Group(data, id));
         this.changedAt = new Date(changed_at); // eslint-disable-line camelcase
         this.changedBy = changed_by; // eslint-disable-line camelcase
 
