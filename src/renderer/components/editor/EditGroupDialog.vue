@@ -11,31 +11,11 @@
                 :rules="[notEmpty]"
             ></v-text-field>
 
-            <v-switch
-                v-model="showAll"
-                color="teal"
-                label="Отображать все вопросы из группы"
-            ></v-switch>
-
-            <v-slide-y-transition mode="out-in">
-                <div v-if="!showAll">
-                    <div>Количество вопросов для отображения:</div>
-                    <v-text-field
-                        v-model="showMin"
-                        required
-                        label="От:"
-                        prepend-icon="exposure_zero"
-                        :rules="[notEmpty, isNumber, positive]"
-                    ></v-text-field>
-                    <v-text-field
-                        v-model="showMax"
-                        required
-                        label="До:"
-                        prepend-icon="exposure_zero"
-                        :rules="[notEmpty, isNumber, positive]"
-                    ></v-text-field>
-                </div>
-            </v-slide-y-transition>
+            <shown-editor
+                :value="showConfig"
+                @input="onShowConfigChanged"
+                @validation="showConfigValid = $event"
+            >Количество вопросов для отображения:</shown-editor>
 
         </v-card-text>
         <v-card-actions>
@@ -50,6 +30,8 @@
 </template>
 
 <script>
+import ShownEditor from './ShownEditor.vue';
+
 export default {
     name: 'edit-group-dialog',
 
@@ -63,9 +45,8 @@ export default {
             localShow: false,
 
             groupName: '',
-            showAll: false,
-            showMin: '1',
-            showMax: '1'
+            showConfig: { all: true },
+            showConfigValid: true
         };
     },
 
@@ -87,28 +68,18 @@ export default {
 
             const changes = {
                 label: this.groupName,
-                show: {}
+                show: this.showConfig
             };
-            if (this.showAll) {
-                changes.show.all = true;
-            } else {
-                changes.show = { min: +this.showMin, max: +this.showMax };
-            }
-
 
             this.$emit('input', changes);
         },
 
+        onShowConfigChanged(nval) {
+            this.showConfig = nval;
+        },
+
         validate() {
-            return this.groupName.length > 0 && ( // group name should be provided, and
-                this.showAll || ( // show all questions or
-                    // provide positive numbers for min and max
-                    this.isNumber(this.showMin) === true &&
-                    this.isNumber(this.showMax) === true &&
-                    this.positive(this.showMin) === true &&
-                    this.positive(this.showMax) === true
-                )
-            );
+            return this.groupName.length > 0 && this.showConfigValid;
         },
 
         close() {
@@ -123,9 +94,7 @@ export default {
             handler(nval) {
                 if (nval !== null) {
                     this.groupName = nval.label;
-                    this.showAll = nval.show.all || false;
-                    this.showMin = String(nval.show.min || 1);
-                    this.showMax = String(nval.show.max || 1);
+                    this.showConfig = nval.show;
                 }
             },
             deep: true
@@ -138,18 +107,14 @@ export default {
             this.$emit('shown', nval);
         },
 
-        groupName(nval) {
+        groupName() {
             this.onChanged();
         },
-        showAll(nval) {
-            this.onChanged();
-        },
-        showMin(nval) {
-            this.onChanged();
-        },
-        showMax(nval) {
+        showConfig() {
             this.onChanged();
         }
-    }
+    },
+
+    components: { ShownEditor }
 };
 </script>
