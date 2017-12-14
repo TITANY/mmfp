@@ -45,6 +45,10 @@ export default {
         },
         value(nval) {
             this.chosenAnswer = nval;
+        },
+        answers(nval) {
+            this.chosenAnswer = this.chosenAnswer
+                .filter(i => i < nval.length);
         }
     }
 };

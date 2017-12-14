@@ -63,6 +63,39 @@
         v-model="shownCorrect"
         v-if="shownCorrectEditable"
     >Показывать правильных ответов:</shown-editor>
+
+    <v-dialog
+        v-model="changeAnswersDialog"
+        max-width="500px"
+        persistent
+    >
+        <v-btn
+            dark color="teal"
+            slot="activator"
+            @click="openChangeAnswersDialog"
+        >Изменить ответы</v-btn>
+        <v-card>
+            <v-card-text>
+                <p>Введите варианты ответов (по одному на строку):</p>
+                <v-text-field
+                    label="Список ответов"
+                    v-model="answersText"
+                    textarea rows="10"
+                    required
+                ></v-text-field>
+            </v-card-text>
+            <v-card-actions>
+                <v-btn
+                    flat
+                    @click="closeChangeAnswersDialog"
+                >Отмена</v-btn>
+                <v-btn
+                    dark color="teal"
+                    @click="applyChangeAnswers"
+                >Применить</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </div>
 </template>
 
@@ -99,7 +132,8 @@ export default {
     name: 'question-editor',
     props: {
         value: Object,
-        groups: Array
+        groups: Array,
+        answers: Array
     },
 
     data() {
@@ -112,7 +146,10 @@ export default {
             shownAnswers: { all: true },
             shownCorrect: { all: true },
 
-            scores: {}
+            scores: {},
+
+            changeAnswersDialog: false,
+            answersText: ''
         };
     },
 
@@ -174,6 +211,39 @@ export default {
                 obj[nextScore.name] = nextScore.defVal;
                 return obj;
             }, {});
+        },
+
+        openChangeAnswersDialog() {
+            this.answersText = this.answers
+                .map(({ label }) => label)
+                .join('\n'); // TODO: use OS-based separator
+            this.changeAnswersDialog = true;
+        },
+        closeChangeAnswersDialog() {
+            this.changeAnswersDialog = false;
+        },
+        applyChangeAnswers() {
+            this.closeChangeAnswersDialog();
+            const newAnswerLabels = this.answersText
+                .split('\n') // TODO
+                .map(s => s.trim())
+                .filter(l => l.length);
+            if (newAnswerLabels.length < 2) return;
+
+            const newAnswers = newAnswerLabels.map(label => {
+                const was = this.answers.filter(a => a.label === label);
+                if (was.length) {
+                    return Object.assign({}, was[0], { label });
+                } else {
+                    return {
+                        label,
+                        id: void 0,
+                        correct: false
+                    };
+                }
+            });
+
+            this.$emit('answers-changed', newAnswers);
         }
     },
 

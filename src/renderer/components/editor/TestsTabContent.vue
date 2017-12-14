@@ -52,7 +52,9 @@
                         <question-editor
                             :groups="groups"
                             :value="test"
+                            :answers="test.answers"
                             @input="onQuestionChanged(i, $event)"
+                            @answers-changed="onAnswersChanged(i, $event)"
                         ></question-editor>
                         <v-divider></v-divider>
 
@@ -175,6 +177,15 @@ export default {
                 }, 50);
                 // this.tests[i] = newQuestion;
             }
+        },
+
+        onAnswersChanged(i, newAnswers) {
+            const q = this.tests[i];
+            q.answers = newAnswers.map((a, j) => {
+                a.id = j;
+                return a;
+            });
+            // TODO: make correct answers persistent?
         },
 
         addQuestion() {},
