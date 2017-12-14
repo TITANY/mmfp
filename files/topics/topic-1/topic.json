@@ -20,8 +20,8 @@
         "check": "..."
     },
     "model": {
-        "file": "model.js",
-        "type": "model_function",
+        "file": "model.dat",
+        "type": "builtin_isotope_content",
         "check": "..."
     }
 }
