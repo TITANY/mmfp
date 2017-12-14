@@ -13,6 +13,7 @@
 
             <shown-editor
                 :value="showConfig"
+                :collapse="false"
                 @input="onShowConfigChanged"
                 @validation="showConfigValid = $event"
             >Количество вопросов для отображения:</shown-editor>

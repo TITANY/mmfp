@@ -1,30 +1,37 @@
 <template>
 <div>
     <v-subheader><slot>Отображать:</slot></v-subheader>
-    <v-switch
-        v-model="showAll"
-        color="teal"
-        label="Все"
-    ></v-switch>
 
-    <v-slide-y-transition mode="out-in">
-        <div v-if="!showAll">
-            <v-text-field
-                v-model="showMin"
-                required
-                label="От:"
-                prepend-icon="exposure_zero"
-                :rules="[notEmpty, isNumber, positive, maxGreaterThanMin]"
-            ></v-text-field>
-            <v-text-field
-                v-model="showMax"
-                required
-                label="До:"
-                prepend-icon="exposure_zero"
-                :rules="[notEmpty, isNumber, positive, maxGreaterThanMin]"
-            ></v-text-field>
-        </div>
-    </v-slide-y-transition>
+    <v-container fluid>
+        <v-layout row wrap align-center>
+            <v-flex xs12 :md4="collapse">
+                <v-switch
+                    v-model="showAll"
+                    color="teal"
+                    label="Все"
+                ></v-switch>
+            </v-flex>
+
+            <v-flex xs12 :md4="collapse">
+                <v-text-field
+                    v-if="!showAll"
+                    v-model="showMin"
+                    required
+                    label="От:"
+                    :rules="[notEmpty, isNumber, positive, maxGreaterThanMin]"
+                ></v-text-field>
+            </v-flex>
+            <v-flex xs12 :md4="collapse">
+                <v-text-field
+                    v-if="!showAll"
+                    v-model="showMax"
+                    required
+                    label="До:"
+                    :rules="[notEmpty, isNumber, positive, maxGreaterThanMin]"
+                ></v-text-field>
+            </v-flex>
+        </v-layout>
+    </v-container>
 </div>
 </template>
 
@@ -33,7 +40,11 @@ export default {
     name: 'shown-editor',
 
     props: {
-        value: Object
+        value: Object,
+        collapse: {
+            type: Boolean,
+            default: true
+        }
     },
 
     data() {
