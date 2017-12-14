@@ -49,9 +49,11 @@ export default {
             default: '25%'
         }
     },
-    data: () => ({
-        dialog: this.value
-    }),
+    data() {
+        return {
+            dialog: this.value
+        };
+    },
     computed: {
         nActions: function () {
             return this.actions.map(a => {

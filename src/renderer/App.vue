@@ -191,6 +191,7 @@ export default {
         },
 
         sidemenuAction: function (action) {
+            console.log(action);
             if (typeof action === typeof '') {
                 cmd(action);
             } else {

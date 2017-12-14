@@ -5,7 +5,7 @@
         <v-card>
             <v-card-title class="headline">Общие настройки приложения</v-card-title>
             <v-card-text>
-                Общие настройки приложения...
+                На данный момент настройки недоступны.
             </v-card-text>
         </v-card>
     </v-expansion-panel-content>
@@ -25,7 +25,7 @@
             </v-card-text>
         </v-card>
     </v-expansion-panel-content>
-    <v-expansion-panel-content>
+    <v-expansion-panel-content v-if="su">
         <div slot="header">Авторизация</div>
         <v-card>
             <v-card-title class="headline">Настройки авторизации</v-card-title>
@@ -34,7 +34,7 @@
             </v-card-text>
         </v-card>
     </v-expansion-panel-content>
-    <v-expansion-panel-content>
+    <v-expansion-panel-content v-if="su">
         <div slot="header">Журналирование</div>
         <v-card>
             <v-card-title class="headline">Настройки журналирования</v-card-title>
@@ -75,6 +75,10 @@ export default {
                     label: z + '%',
                     value: z / 100
                 }));
+        },
+
+        su() {
+            return this.$store.state.user.superuser;
         }
     }
 };
