@@ -1,10 +1,7 @@
 export default class Scores {
     constructor(scores) {
-        this.data = scores.sort((a, b) => {
-            if (a.default) return -1;
-            if (b.default) return 1;
-            return a.starts_from - b.starts_from;
-        });
+        this.data = scores;
+        this.sort();
     }
 
     name(score) {
@@ -23,5 +20,13 @@ export default class Scores {
             }
         }
         return title;
+    }
+
+    sort() {
+        this.data = this.data.sort((a, b) => {
+            if (a.default) return -1;
+            if (b.default) return 1;
+            return a.starts_from - b.starts_from;
+        });
     }
 }

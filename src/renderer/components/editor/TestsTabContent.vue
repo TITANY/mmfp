@@ -1,6 +1,53 @@
 <template>
 <v-container grid-list-lg fluid>
     <v-layout row wrap v-if="loaded">
+
+        <!-- Common test info -->
+        <v-flex xs12 lg6>
+            <v-subheader>Информация о тесте</v-subheader>
+            <v-divider></v-divider>
+
+            <v-text-field
+                textarea rows="5"
+                label="Описание теста"
+                color="teal"
+                v-model="description"
+            ></v-text-field>
+        </v-flex>
+
+        <v-flex xs12 lg6>
+            <v-subheader>Шкала оценок</v-subheader>
+            <v-divider></v-divider>
+            <v-list two-line subheader>
+                <template v-for="(s, i) in scores.data">
+                    <v-list-tile
+                        avatar
+                        :key="i + '_' + s.title"
+                        @click="editScore(s)"
+                    >
+                        <v-list-tile-content>
+                            <v-list-tile-title>{{ s.title }}</v-list-tile-title>
+                            <v-list-tile-sub-title>{{ scoreSummary(s) }}</v-list-tile-sub-title>
+                        </v-list-tile-content>
+                        <v-list-tile-action>
+                            <v-btn
+                                icon
+                                ripple
+                                @click.stop="removeScore(i)"
+                            ><v-icon color="red">delete_forever</v-icon></v-btn>
+                        </v-list-tile-action>
+                    </v-list-tile>
+                </template>
+            </v-list>
+            <div class="text-xs-right">
+                <v-btn
+                    dark color="teal"
+                    @click="addScore"
+                ><v-icon>add</v-icon>Добавить оценку</v-btn>
+            </div>
+        </v-flex>
+
+        <!-- Question groups -->
         <v-flex xs12 lg4>
             <v-subheader>Группы вопросов</v-subheader>
             <v-divider class="mb-3"></v-divider>
@@ -16,6 +63,13 @@
                             <v-list-tile-title>{{ g.label }}</v-list-tile-title>
                             <v-list-tile-sub-title>Отображать: {{ groupSummary(g.show) }}</v-list-tile-sub-title>
                         </v-list-tile-content>
+                        <v-list-tile-action>
+                            <v-btn
+                                icon
+                                ripple
+                                @click.stop="removeGroup(i)"
+                            ><v-icon color="red">delete_forever</v-icon></v-btn>
+                        </v-list-tile-action>
                     </v-list-tile>
                 </template>
             </v-list>
@@ -28,6 +82,7 @@
             </div>
         </v-flex>
 
+        <!-- Test content -->
         <v-flex xs12 lg8>
             <v-subheader>Содержимое теста</v-subheader>
             <v-divider class="mb-3"></v-divider>
@@ -85,6 +140,13 @@
         @input="onGroupChanged"
         @shown="showGroupDialog = $event"
     ></edit-group-dialog>
+
+    <score-editor-dialog
+        :show="showScoreDialog"
+        :value="selectedScore"
+        @input="onScoreChanged"
+        @shown="showScoreDialog = $event"
+    ></score-editor-dialog>
 </v-container>
 </template>
 
@@ -95,6 +157,7 @@ import '@/classes/tests/OTest';
 
 import components from '../tests';
 import EditGroupDialog from './EditGroupDialog';
+import ScoreEditorDialog from './ScoreEditorDialog';
 import QuestionEditor from './QuestionEditor';
 
 
@@ -118,9 +181,13 @@ export default {
             tests: [],
             // answers: [],
             scores: [],
+            description: '',
 
             selectedGroupIndex: -1,
             showGroupDialog: false,
+
+            selectedScore: null,
+            showScoreDialog: false,
 
             stepper: 0,
             loaded: false
@@ -134,6 +201,13 @@ export default {
             }
             return this.groups[this.selectedGroupIndex];
         }
+
+        // selectedScore() {
+        //     if (this.selectedScoreIndex === -1) {
+        //         return null;
+        //     }
+        //     return this.scores.data[this.selectedScoreIndex];
+        // }
     },
 
     methods: {
@@ -144,21 +218,48 @@ export default {
                 return `от ${shownConfig.min} до ${shownConfig.max}`;
             }
         },
-
         editGroup(i) {
             this.selectedGroupIndex = i;
             this.showGroupDialog = true;
         },
-
         addGroup() {
             this.groups.push({
                 label: 'Группа #' + (this.groups.length + 1),
                 show: { all: true }
             });
         },
-
         onGroupChanged(changes) {
             this.groups.splice(this.selectedGroupIndex, 1, changes);
+        },
+        removeGroup(i) {
+            this.groups.splice(i, 1);
+        },
+
+        editScore(s) {
+            this.selectedScore = s;
+            this.showScoreDialog = true;
+        },
+        scoreSummary(s) {
+            if (s.default) {
+                return '(По умолчанию)';
+            } else {
+                return `Начиная с ${s.starts_from} баллов`;
+            }
+        },
+        onScoreChanged(changes) {
+            const score = this.selectedScore; // this.scores.data[this.selectedScoreIndex];
+            Object.assign(score, changes);
+            this.scores.sort();
+        },
+        addScore() {
+            this.scores.data.push({
+                title: 'Новая оценка',
+                starts_from: 0
+            });
+            this.scores.sort();
+        },
+        removeScore(i) {
+            this.scores.data.splice(i, 1);
         },
 
         onQuestionChanged(i, changes) {
@@ -196,6 +297,7 @@ export default {
             this.groups = test.groups;
             this.tests = test.content;
             this.scores = test.scores;
+            this.description = test.description;
             // this.answers = this.tests.map(q => {
             //     const correct = q.correct;
             //     if (Array.isArray(correct)) {
@@ -225,6 +327,7 @@ export default {
     components: Object.assign(
         {
             EditGroupDialog,
+            ScoreEditorDialog,
             QuestionEditor
         },
         components
