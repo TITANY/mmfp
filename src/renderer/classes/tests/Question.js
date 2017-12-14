@@ -16,7 +16,7 @@ const types = {
         }
         return win;
     },
-    // eslint-disable-next-line camelcase 
+    // eslint-disable-next-line camelcase
     vdist: (given, correct, all, { match, false_match, false_mismatch = false_match }) => {
         const falseMatches = diff(given, correct);
         const falseMismatches = diff(correct, given);
