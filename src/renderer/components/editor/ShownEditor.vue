@@ -1,14 +1,14 @@
 <template>
 <div>
+    <v-subheader><slot>Отображать:</slot></v-subheader>
     <v-switch
         v-model="showAll"
         color="teal"
-        label="Отображать все вопросы из группы"
+        label="Все"
     ></v-switch>
 
     <v-slide-y-transition mode="out-in">
         <div v-if="!showAll">
-            <div><slot>Отображать:</slot></div>
             <v-text-field
                 v-model="showMin"
                 required
@@ -86,17 +86,23 @@ export default {
                 this.positive(this.showMax) === true &&
                 ((+this.showMax) >= (+this.showMin))
             );
+        },
+
+        updateLocalValue(nval) {
+            if (nval !== null) {
+                this.showAll = nval.all || false;
+                if (!this.showAll) {
+                    this.showMin = String(nval.min || '1');
+                    this.showMax = String(nval.max || '1');
+                }
+            }
         }
     },
 
     watch: {
         value: {
             handler(nval) {
-                if (nval !== null) {
-                    this.showAll = nval.all || false;
-                    this.showMin = String(nval.min || '1');
-                    this.showMax = String(nval.max || '1');
-                }
+                this.updateLocalValue(nval);
             },
             deep: true
         },
@@ -110,6 +116,10 @@ export default {
         showMax(nval) {
             this.onChanged();
         }
+    },
+
+    mounted() {
+        this.updateLocalValue(this.value);
     }
 };
 </script>

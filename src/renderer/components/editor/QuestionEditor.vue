@@ -52,10 +52,24 @@
             @input="setScoreValue(s.name, $event)"
         ></v-text-field>
     </template>
+    <v-divider></v-divider>
+
+    <shown-editor
+        v-model="shownAnswers"
+    >Показывать ответов:</shown-editor>
+    <v-divider></v-divider>
+
+    <shown-editor
+        v-model="shownCorrect"
+        v-if="shownCorrectEditable"
+    >Показывать правильных ответов:</shown-editor>
 </div>
 </template>
 
 <script>
+import ShownEditor from './ShownEditor.vue';
+
+
 const typesList = [
     { type: 'single', label: 'С одним ответом' },
     { type: 'multiple', label: 'С несколькими ответами' }
@@ -95,6 +109,9 @@ export default {
             qGroup: 0,
             question: '?',
 
+            shownAnswers: { all: true },
+            shownCorrect: { all: true },
+
             scores: {}
         };
     },
@@ -109,6 +126,10 @@ export default {
 
         groupsList() {
             return this.groups.map(({ label }, id) => ({ label, id }));
+        },
+
+        shownCorrectEditable() {
+            return this.qType !== 'single';
         }
     },
 
@@ -121,18 +142,30 @@ export default {
         },
 
         onChanged() {
-            this.$emit('input', {
+            const nval = {
                 type: this.qType,
                 checkType: this.checkType,
                 question: this.question,
-                group: this.qGroup
-            });
+                group: this.qGroup,
+                shown: this.shownAnswers,
+
+                shownCorrect: { all: true }
+            };
+
+            if (this.shownCorrectEditable) {
+                nval.shownCorrect = this.shownCorrect;
+            }
+
+            this.$emit('input', nval);
         },
         updateLocalValue() {
             this.qType = this.value.type;
             this.checkType = this.value.checkType;
             this.question = this.value.question;
             this.qGroup = this.value.group.id;
+            this.shownAnswers = this.value.shown;
+
+            this.shownCorrect = this.value.shownCorrect;
         },
 
         updateScores() {
@@ -156,12 +189,16 @@ export default {
 
         qType() { this.onChanged(); },
         question() { this.onChanged(); },
-        qGroup() { this.onChanged(); }
+        qGroup() { this.onChanged(); },
+        shownAnswers: { handler() { this.onChanged(); }, deep: true },
+        shownCorrect: { handler() { this.onChanged(); }, deep: true }
     },
 
     mounted() {
         this.updateLocalValue();
         // this.updateScores();
-    }
+    },
+
+    components: { ShownEditor }
 };
 </script>
