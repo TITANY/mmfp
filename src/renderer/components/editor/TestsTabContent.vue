@@ -127,6 +127,10 @@
 
             <div class="text-xs-right">
                 <v-btn
+                    dark color="red"
+                    @click="removeCurrentQuestion"
+                ><v-icon>delete</v-icon>Удалить вопрос</v-btn>
+                <v-btn
                     dark color="teal"
                     @click="addQuestion"
                 ><v-icon>add</v-icon>Добавить вопрос</v-btn>
@@ -223,7 +227,7 @@ export default {
             this.showGroupDialog = true;
         },
         addGroup() {
-            this.groups.push({
+            this._test.addGroup({
                 label: 'Группа #' + (this.groups.length + 1),
                 show: { all: true }
             });
@@ -232,7 +236,9 @@ export default {
             this.groups.splice(this.selectedGroupIndex, 1, changes);
         },
         removeGroup(i) {
-            this.groups.splice(i, 1);
+            if (this.groups.length > 1) {
+                this.groups.splice(i, 1);
+            }
         },
 
         editScore(s) {
@@ -259,7 +265,9 @@ export default {
             this.scores.sort();
         },
         removeScore(i) {
-            this.scores.data.splice(i, 1);
+            if (this.scores.data.length > 1) {
+                this.scores.data.splice(i, 1);
+            }
         },
 
         onQuestionChanged(i, changes) {
@@ -271,13 +279,21 @@ export default {
 
                 // HACK: that v-stepper behaves strange when the array item changes -_-
                 // so this is important for it to be rendered to user
-                const s = this.stepper;
-                this.stepper = s + 1;
-                setTimeout(() => {
-                    this.stepper = s;
-                }, 50);
+                this.moveStepper();
+                // const s = this.stepper;
+                // this.stepper = s + 1;
+                // setTimeout(() => {
+                //     this.stepper = s;
+                // }, 50);
                 // this.tests[i] = newQuestion;
             }
+        },
+
+        moveStepper(newPos = this.stepper) {
+            this.stepper = newPos + 1;
+            setTimeout(() => {
+                this.stepper = newPos;
+            }, 50);
         },
 
         onAnswersChanged(i, newAnswers) {
@@ -289,7 +305,31 @@ export default {
             // TODO: make correct answers persistent?
         },
 
-        addQuestion() {},
+        addQuestion() {
+            this._test.addQuestion({
+                question: 'A or B?',
+                answers: ['A', 'B'],
+                'await': 1,
+                points: { win: 1, lose: 0 },
+                type: 'single',
+                'check_type': 'simple',
+                'shown_correct': { all: true },
+                'shown_answers': { all: true }
+            });
+
+            this.moveStepper(this.tests.length);
+        },
+
+        removeCurrentQuestion() {
+            if (this.tests.length > 1) {
+                const currentQuestionIndex = this.stepper - 1;
+                if (currentQuestionIndex < 0 || currentQuestionIndex >= this.tests.length)
+                    return;
+
+                this.tests.splice(currentQuestionIndex, 1);
+                this.moveStepper(1);
+            }
+        },
 
         load() {
             const test = Test.read(this.value.type, this.value.content);

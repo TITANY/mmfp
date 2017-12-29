@@ -211,6 +211,7 @@ export default {
                 obj[nextScore.name] = nextScore.defVal;
                 return obj;
             }, {});
+            console.log('Scores updated!', this.scores);
         },
 
         openChangeAnswersDialog() {
@@ -266,6 +267,7 @@ export default {
 
     mounted() {
         this.updateLocalValue();
+        this.updateScores();
         // this.updateScores();
     },
 

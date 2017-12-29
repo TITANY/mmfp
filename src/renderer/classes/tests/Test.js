@@ -79,6 +79,16 @@ export default class Test {
     write(file) {
         throw new TypeError('Basic test cannot write!');
     }
+
+    addQuestion(data) {
+        const q = Question.create(data);
+        this.groups[0].add(q);
+        this.content.push(q);
+    }
+
+    addGroup(data) {
+        this.groups.push(new Group(data, this.groups.length));
+    }
 }
 
 const registry = {};
