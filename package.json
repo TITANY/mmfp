@@ -46,10 +46,12 @@
       "icon": "build/icons/icon.icns"
     },
     "win": {
-      "icon": "build/icons/icon.ico"
+      "icon": "build/icons/icon.ico",
+      "target": "portable"
     },
     "linux": {
-      "icon": "build/icons"
+      "icon": "build/icons",
+      "category": "Education"
     }
   },
   "dependencies": {

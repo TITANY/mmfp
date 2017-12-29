@@ -5,6 +5,8 @@
                 fixed
                 clipped
                 app
+                light
+                enable-resize-watcher
                 v-model="drawer"
             >
                 <v-list>
@@ -261,6 +263,8 @@ export default {
         eventBus.$on('navigate', event => {
             this.$router.push(event);
         });
+
+        this.title = process.cwd();
 
         // non-reactive data
         // callbacks:
