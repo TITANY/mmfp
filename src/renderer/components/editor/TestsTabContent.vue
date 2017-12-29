@@ -321,6 +321,10 @@ export default {
         },
         setAnswer(i, a) {
             this.tests[i].correct = a;
+        },
+
+        save(file) {
+            this._test.write(file);
         }
     },
 

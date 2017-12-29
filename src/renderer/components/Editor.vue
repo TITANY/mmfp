@@ -16,6 +16,7 @@
                     <v-subheader>Выберите тему для редактирования:</v-subheader>
                     <v-divider></v-divider>
                     <topics-list
+                        ref="tlist"
                         :value="selectedTopicId"
                         @input="onTopicSelected"
                     ></topics-list>
@@ -45,6 +46,7 @@
 import SuperuserProtector from './misc/SuperuserProtector.vue';
 import TopicsList from './TopicsList';
 import EditorDialog from './editor/EditorDialog';
+import { topics } from '../../files';
 
 
 export default {
@@ -77,7 +79,10 @@ export default {
         edit() {
             this.editorOpened = true;
         },
-        createNew() {},
+        createNew() {
+            topics.create()
+                .then(() => this.$refs.tlist.refresh());
+        },
 
         onTopicSelected(topic) {
             this.selectedTopic = topic;

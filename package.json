@@ -20,7 +20,7 @@
   },
   "build": {
     "productName": "mmfp",
-    "appId": "ru.22kaf.mmfp-app",
+    "appId": "ru.kaf22.mmfp-app",
     "directories": {
       "output": "build"
     },

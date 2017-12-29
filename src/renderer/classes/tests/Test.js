@@ -61,6 +61,24 @@ export default class Test {
             score
         };
     }
+
+    serialize() {
+        return {
+            meta: {
+                description: this.description,
+                changed_by: this.changedBy,
+                changed_at: this.changedAt,
+                scores: this.scores.serialize(),
+                groups: this.groups.map(g => g.serialize())
+            },
+
+            content: this.content.map(q => q.serialize())
+        };
+    }
+
+    write(file) {
+        throw new TypeError('Basic test cannot write!');
+    }
 }
 
 const registry = {};
@@ -72,4 +90,9 @@ Test.register = (name, T) => {
 Test.read = (type, content) => {
     const T = registry[type] || Test;
     return new T(content);
+};
+
+Test.write = (type, content, file) => {
+    const T = registry[type] || Test;
+    return new T(content).write(file);
 };

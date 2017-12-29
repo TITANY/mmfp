@@ -31,7 +31,7 @@ export default {
     name: 'superuser-protector',
     computed: {
         su() {
-            return this.$store.state.user.superuser;
+            return this.$store.state.user.superuser || true;
         }
     },
     methods: {

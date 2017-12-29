@@ -19,4 +19,11 @@ export default class Group {
 
         return getShown(this.show, rendered);
     }
+
+    serialize() {
+        return {
+            label: this.label,
+            show: this.show
+        };
+    }
 }

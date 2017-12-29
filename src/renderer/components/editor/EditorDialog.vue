@@ -78,6 +78,7 @@
                             <tests-tab-content
                                 :value="tests"
                                 @input="onTestsTabInput"
+                                ref="tests"
                             ></tests-tab-content>
                         </v-card-text>
                     </v-card>
@@ -89,9 +90,12 @@
 </v-dialog>
 </template>
 <script>
+/* eslint-disable */
+import path from 'path';
 import { topics } from '../../../files';
 import InfoTabContent from './InfoTabContent.vue';
 import TestsTabContent from './TestsTabContent.vue';
+import Test from '@/classes/tests/Test';
 
 
 export default {
@@ -128,7 +132,15 @@ export default {
 
     methods: {
         save() {
-
+            return topics.update(this.topicDir, { meta: this.topicInfo })
+                .then(topic => {
+                    this.$refs.tests.save(
+                        path.resolve(
+                            topics.getDirPath(this.topicDir),
+                            topic.raw().tests.file
+                        )
+                    );
+                });
         },
 
         close() {
@@ -160,7 +172,7 @@ export default {
         },
 
         onTestsTabInput(ev) {
-            Object.assign(this.tests, ev);
+            this.tests = ev;
         },
 
         onTheoryTabInput(ev) {

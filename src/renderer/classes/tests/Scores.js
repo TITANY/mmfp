@@ -29,4 +29,8 @@ export default class Scores {
             return a.starts_from - b.starts_from;
         });
     }
+
+    serialize() {
+        return this.data;
+    }
 }

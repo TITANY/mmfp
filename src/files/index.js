@@ -1,5 +1,6 @@
 import path from 'path';
-import { mkdir, readDir, readJson } from './fs';
+import { v4 } from 'uuid';
+import { mkdir, readDir, readJson, writeFile, writeJson } from './fs';
 import readSection from './section';
 
 const cwd = process.cwd();
@@ -37,6 +38,10 @@ export const topics = {
                         return topic.meta;
                     },
 
+                    raw() {
+                        return topic;
+                    },
+
                     theory() {
                         return readSection(topic.theory, path.resolve(TOPICS_DIR_ABS, dirname));
                     },
@@ -53,5 +58,69 @@ export const topics = {
                 };
             })
         ;
+    },
+
+    create(dirname = v4()) {
+        const defaultJsonContent = {
+            meta: { id: dirname, name: 'Новая тема', description: '', category: '(нет)' },
+            theory: { file: 'content.html', type: 'html_part', check: '', images: [] },
+            tests: { file: 'test.ots', type: 'obfuscated_test', check: '' },
+            model: false
+        };
+
+        const defaultTestContent = {
+            meta: {
+                description: 'Новый тест',
+                'scores': [
+                    { 'title': 'Незачёт', 'default': true }
+                ],
+                'groups': [
+                    {
+                        'label': 'Group 1',
+                        'show': { all: true }
+                    }
+                ],
+                'changed_by': 'bob',
+                'changed_at': new Date().toISOString()
+            },
+            'content': [
+                {
+                    'answers': [
+                        'A',
+                        'B'
+                    ],
+                    'await': 1,
+                    'check_type': 'simple',
+                    'points': { 'win': 1, 'lose': 0 },
+                    'question': 'A or B?',
+                    'shown_answers': { all: true },
+                    'type': 'single',
+                    'group': 0
+                }
+            ]
+        };
+
+        const p = path.resolve(TOPICS_DIR_ABS, dirname);
+
+        return mkdir(p)
+            .then(() => writeJson(path.resolve(p, TOPIC_JSON), defaultJsonContent))
+            .then(() => writeFile(path.resolve(p, 'content.html'), '<h2>Новая тема</h2>'))
+            .then(() => writeJson(path.resolve(p, 'test.ots'), defaultTestContent))
+            .then(() => topics.get(dirname));
+    },
+
+    update(dirname, content) {
+        const p = path.resolve(TOPICS_DIR_ABS, dirname);
+        return mkdir(p)
+            .then(() => readJson(path.resolve(p, TOPIC_JSON)))
+            .then(topic => {
+                Object.assign(topic, content);
+                writeJson(path.resolve(p, TOPIC_JSON), topic);
+            })
+            .then(() => topics.get(dirname));
+    },
+
+    getDirPath(dirname) {
+        return path.resolve(TOPICS_DIR_ABS, dirname);
     }
 };
