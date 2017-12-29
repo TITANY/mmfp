@@ -65,7 +65,12 @@
                     id="theory"
                 >
                     <v-card flat>
-                        <v-card-text>Теория</v-card-text>
+                        <v-card-text>
+                            <v-alert color="info" icon="info" value="true">
+                                Для редактирования содержимого теоретического раздела
+                                пожалуйста, воспользуйтесь сторонним текстовым редактором!
+                            </v-alert>
+                        </v-card-text>
                     </v-card>
                 </v-tabs-content>
 
