@@ -15,7 +15,9 @@
                         <v-progress-circular indeterminate color="teal"></v-progress-circular>
                     </div>
                     <div v-if="error">
-                        {{ error }}
+                        <v-alert color="error" icon="warning" value="true">
+                            {{ error }}
+                        </v-alert>
                     </div>
                     <component
                         v-if="loaded && !loading"
@@ -73,6 +75,11 @@ export default {
             return topics.get(dirname)
                 .then(topic => topic.model().then(m => [topic, m]))
                 .then(([topic, model]) => {
+                    if (model === null) {
+                        this.error = 'Раздел моделирования не предусмотрен для этой темы!';
+                        this.loading = false;
+                        return;
+                    }
                     this.content = model.content;
                     this.contentType = model.type;
                     this.checked = model.checked;
