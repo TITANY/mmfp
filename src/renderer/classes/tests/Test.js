@@ -4,6 +4,7 @@ import Question from './Question';
 import Scores from './Scores';
 import cloneDeep from 'lodash/cloneDeep';
 
+/* eslint-disable camelcase */
 export default class Test {
     constructor({
         meta: {
