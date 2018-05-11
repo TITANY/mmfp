@@ -1,29 +1,41 @@
 'use strict';
 
+// eslint-disable-next-line
 import { app, BrowserWindow, ipcMain } from 'electron';
-import cmd from './cmd';
+// import cmd from './cmd';
 
-
-ipcMain.on('cmd', (event, arg) => {
-    try {
-        let reply = cmd(arg.cmd, arg.params);
-        console.error(reply);
-        if (reply !== void 0) {
-            if (!(reply instanceof Promise)) {
-                if (reply instanceof Error)
-                    reply = Promise.reject(reply);
-                else
-                    reply = Promise.resolve(reply);
-            }
-            reply
-                .then(reply => event.sender.send('cmd', { error: false, reply }))
-                .catch(err => event.sender.send('cmd', { error: true, reply: err }));
-        }
-    } catch (err) {
-        console.error(err);
-        event.sender.send('cmd', { error: true, reply: err });
-    }
+// Dev tools
+// process.env.NODE_ENV = 'development';
+require('electron-debug')({ showDevTools: true });
+require('electron').app.on('ready', () => {
+    let installExtension = require('electron-devtools-installer');
+    installExtension.default(installExtension.VUEJS_DEVTOOLS)
+        .then(() => {})
+        .catch(err => {
+            console.log('Unable to install `vue-devtools`: \n', err);
+        });
 });
+
+// ipcMain.on('cmd', (event, arg) => {
+//     try {
+//         let reply = cmd(arg.cmd, arg.params);
+//         console.error(reply);
+//         if (reply !== void 0) {
+//             if (!(reply instanceof Promise)) {
+//                 if (reply instanceof Error)
+//                     reply = Promise.reject(reply);
+//                 else
+//                     reply = Promise.resolve(reply);
+//             }
+//             reply
+//                 .then(reply => event.sender.send('cmd', { error: false, reply }))
+//                 .catch(err => event.sender.send('cmd', { error: true, reply: err }));
+//         }
+//     } catch (err) {
+//         console.error(err);
+//         event.sender.send('cmd', { error: true, reply: err });
+//     }
+// });
 
 /**
  * Set `__static` path to static files in production
@@ -34,6 +46,7 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 let mainWindow;
+// eslint-disable-next-line
 const winURL = process.env.NODE_ENV === 'development'
     ? `http://localhost:9080`
     : `file://${__dirname}/index.html`;
@@ -50,7 +63,13 @@ function createWindow() {
 
     mainWindow.loadURL(winURL);
 
+    console.log(winURL);
+    console.log(process.cwd());
+    console.log(__dirname);
+    console.log(__filename);
+
     mainWindow.maximize();
+    mainWindow.webContents.openDevTools();
 
     mainWindow.on('closed', () => {
         mainWindow = null;

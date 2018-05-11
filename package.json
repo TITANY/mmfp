@@ -48,7 +48,7 @@
     },
     "win": {
       "icon": "build/icons/icon.ico",
-      "target": "portable"
+      "target": "nsis"
     },
     "linux": {
       "icon": "build/icons",

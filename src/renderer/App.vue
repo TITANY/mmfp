@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <!-- <v-app>
+        <v-app>
             <v-navigation-drawer
                 fixed
                 clipped
@@ -103,7 +103,7 @@
                 <v-spacer></v-spacer>
                 <span class="white--text">&copy; 2017, TITANY</span>
             </v-footer>
-        </v-app> -->
+        </v-app>
         Hello
     </div>
 </template>
@@ -121,10 +121,10 @@ import {
 } from './utils/dialogs';
 import { changeLoggedIn } from './utils/protect';
 
-// import UserInfo from './components/sidemenu/UserInfo';
-// import MmfpDialog from './components/MmfpDialog';
-// import TopicsList from './components/TopicsList';
-// import SettingsContent from './components/SettingsContent';
+import UserInfo from './components/sidemenu/UserInfo';
+import MmfpDialog from './components/MmfpDialog';
+import TopicsList from './components/TopicsList';
+import SettingsContent from './components/SettingsContent';
 
 
 const noop = () => {};
@@ -272,7 +272,7 @@ export default {
         this.dialogCallbacks = [];
     },
 
-    // components: { UserInfo, MmfpDialog, TopicsList, SettingsContent },
+    components: { UserInfo, MmfpDialog, TopicsList, SettingsContent },
 
     watch: {
         user: {
