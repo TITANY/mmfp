@@ -1,26 +1,26 @@
 <template>
-<div>
-    <v-subheader>{{ question }}</v-subheader>
-    <v-radio-group
-        :mandatory="false"
-        v-model="chosenAnswer"
-    >
-        <v-radio
-            v-for="(answer, j) in answers"
-            :label="answer.label"
-            :value="answer.id"
-            :color="getColor(answer)"
-            :class="getClass(answer)"
-            :disabled="finished"
-            :key="j + '_' + answer.label"
-        ></v-radio>
-    </v-radio-group>
-</div>
+    <div>
+        <v-subheader>{{ question }}</v-subheader>
+        <v-radio-group
+            :mandatory="false"
+            v-model="chosenAnswer"
+        >
+            <v-radio
+                v-for="(answer, j) in answers"
+                :label="answer.label"
+                :value="answer.id"
+                :color="getColor(answer)"
+                :class="getClass(answer)"
+                :disabled="finished"
+                :key="j + '_' + answer.label"
+            ></v-radio>
+        </v-radio-group>
+    </div>
 </template>
 
 <script>
 export default {
-    name: 'test-radio-group',
+    name: 'TestRadioGroup',
     props: {
         'value': Number,
         'question': String,

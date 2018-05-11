@@ -1,36 +1,36 @@
 <template>
-<v-dialog
-    :value="dialog"
-    lazy
-    absolute
-    @input="onDialogInput"
-    persistent
-    max-width="750px"
->
-    <v-card>
-        <v-card-title v-if="title">
-            <slot name="title"></slot>
-        </v-card-title>
-        <v-card-text>
-            <slot></slot>
-        </v-card-text>
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-                v-for="(action, i) in nActions"
-                :flat="action.style.flat"
-                :class="action.style.class"
-                :key="i"
-                @click.native="onAction(action)"
-            >{{ action.label }}</v-btn>
-        </v-card-actions>
-    </v-card>
-</v-dialog>
+    <v-dialog
+        :value="dialog"
+        lazy
+        absolute
+        @input="onDialogInput"
+        persistent
+        max-width="750px"
+    >
+        <v-card>
+            <v-card-title v-if="title">
+                <slot name="title"></slot>
+            </v-card-title>
+            <v-card-text>
+                <slot></slot>
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                    v-for="(action, i) in nActions"
+                    :flat="action.style.flat"
+                    :class="action.style.class"
+                    :key="i"
+                    @click.native="onAction(action)"
+                >{{ action.label }}</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script>
 export default {
-    name: 'mmfp-dialog',
+    name: 'MmfpDialog',
     props: {
         'value': Boolean,
         'actions': {

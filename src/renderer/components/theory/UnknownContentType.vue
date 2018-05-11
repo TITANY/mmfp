@@ -1,14 +1,14 @@
 <template>
-<div>
-    <p>
-        Неподдерживаемый тип файла {{ contentType }}! Содержимое файла:
-    </p>
-    <pre>{{ content }}</pre>
-</div>
+    <div>
+        <p>
+            Неподдерживаемый тип файла {{ contentType }}! Содержимое файла:
+        </p>
+        <pre>{{ content }}</pre>
+    </div>
 </template>
 <script>
 export default {
-    name: 'unknown-content-type',
+    name: 'UnknownContentType',
     props: {
         'content': String,
         'contentType': String

@@ -1,40 +1,40 @@
 <template>
-<v-dialog v-model="localShow" max-width="500px">
-    <v-card>
-        <v-card-title>Редактировать группу</v-card-title>
-        <v-card-text>
-            <v-text-field
-                v-model="groupName"
-                label="Название"
-                prepend-icon="title"
-                required
-                :rules="[notEmpty]"
-            ></v-text-field>
+    <v-dialog v-model="localShow" max-width="500px">
+        <v-card>
+            <v-card-title>Редактировать группу</v-card-title>
+            <v-card-text>
+                <v-text-field
+                    v-model="groupName"
+                    label="Название"
+                    prepend-icon="title"
+                    required
+                    :rules="[notEmpty]"
+                ></v-text-field>
 
-            <shown-editor
-                :value="showConfig"
-                :collapse="false"
-                @input="onShowConfigChanged"
-                @validation="showConfigValid = $event"
-            >Количество вопросов для отображения:</shown-editor>
+                <shown-editor
+                    :value="showConfig"
+                    :collapse="false"
+                    @input="onShowConfigChanged"
+                    @validation="showConfigValid = $event"
+                >Количество вопросов для отображения:</shown-editor>
 
-        </v-card-text>
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-                dark color="teal"
-                @click="close"
-            >Готово</v-btn>
-        </v-card-actions>
-    </v-card>
-</v-dialog>
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                    dark color="teal"
+                    @click="close"
+                >Готово</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script>
 import ShownEditor from './ShownEditor.vue';
 
 export default {
-    name: 'edit-group-dialog',
+    name: 'EditGroupDialog',
 
     props: {
         value: Object,

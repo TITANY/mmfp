@@ -1,60 +1,60 @@
 <template>
-<v-dialog v-model="dialog" max-width="600px" content-class="mathjax">
-    <v-card>
-        <v-card-title>
-            <div class="headline mb-0">Сечения взаимодействий</div>
-        </v-card-title>
-        <v-card-text>
-            <v-container fluid>
-                <v-layout row wrap align-center>
-                    <template
-                        v-for="(val, key) in localValue.c"
-                    >
-                        <v-flex xs2 text-xs-right pr-3>${{ renderLabel('c', key) }}$</v-flex>
-                        <v-flex xs10>
-                            <v-text-field
-                                single-line
-                                v-model="localValue.c[key]"
-                                label="Значение"
-                            ></v-text-field>
-                        </v-flex>
-                    </template>
+    <v-dialog v-model="dialog" max-width="600px" content-class="mathjax">
+        <v-card>
+            <v-card-title>
+                <div class="headline mb-0">Сечения взаимодействий</div>
+            </v-card-title>
+            <v-card-text>
+                <v-container fluid>
+                    <v-layout row wrap align-center>
+                        <template
+                            v-for="(val, key) in localValue.c"
+                        >
+                            <v-flex xs2 text-xs-right pr-3 :key="key + '_1'">${{ renderLabel('c', key) }}$</v-flex>
+                            <v-flex xs10 :key="key + '_2'">
+                                <v-text-field
+                                    single-line
+                                    v-model="localValue.c[key]"
+                                    label="Значение"
+                                ></v-text-field>
+                            </v-flex>
+                        </template>
 
-                    <template
-                        v-for="(val, key) in localValue.a"
-                    >
-                        <v-flex xs2 text-xs-right pr-3>${{ renderLabel('a', key) }}$</v-flex>
-                        <v-flex xs10>
-                            <v-text-field
-                                single-line
-                                v-model="localValue.a[key]"
-                                label="Значение"
-                            ></v-text-field>
-                        </v-flex>
-                    </template>
-                </v-layout>
-            </v-container>
-        </v-card-text>
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-                flat
-                @click.stop="resetValues"
-            >Сбросить к умолчаниям</v-btn>
-            <v-btn
-                dark color="teal"
-                @click="applyValues"
-            >Применить</v-btn>
-        </v-card-actions>
-    </v-card>
-</v-dialog>
+                        <template
+                            v-for="(val, key) in localValue.a"
+                        >
+                            <v-flex xs2 text-xs-right pr-3 :key="key + '_3'">${{ renderLabel('a', key) }}$</v-flex>
+                            <v-flex xs10 :key="key + '_4'">
+                                <v-text-field
+                                    single-line
+                                    v-model="localValue.a[key]"
+                                    label="Значение"
+                                ></v-text-field>
+                            </v-flex>
+                        </template>
+                    </v-layout>
+                </v-container>
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                    flat
+                    @click.stop="resetValues"
+                >Сбросить к умолчаниям</v-btn>
+                <v-btn
+                    dark color="teal"
+                    @click="applyValues"
+                >Применить</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script>
 import cloneDeep from 'lodash/cloneDeep';
 
 export default {
-    name: 'constants-dialog',
+    name: 'ConstantsDialog',
     props: {
         sigma: Object,
         defVals: Object,

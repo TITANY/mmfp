@@ -11,3 +11,4 @@ thumbs.db
 *.iws
 workspace.xml
 tasks.xml
+*.sublime-workspace

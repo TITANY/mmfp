@@ -1,38 +1,38 @@
 <template>
-<v-layout row wrap align-start justify-stretch fill-height>
-    <v-flex>
-        <v-card>
-            <v-card-title primary-title>
-                <h3 class="headline mb-0">Теория</h3>
-            </v-card-title>
-            <v-card-text>
-                <p v-if="!loaded && !loading" class="center--text">
-                    Выберите тему, нажав на иконку списка в панели сверху.
-                </p>
-                <div v-if="loading">
-                    <p>Загрузка...</p>
-                    <v-progress-circular indeterminate color="teal"></v-progress-circular>
-                </div>
-                <component
-                    v-if="loaded && !loading"
-                    :is="getComponentName(contentType)"
-                    :content="content"
-                    :path="contentPath"
-                    :content-type="contentType"
-                ></component>
-            </v-card-text>
-            <v-card-actions>
-                <v-spacer />
-                <v-btn
-                    dark
-                    class="teal"
-                    @click.native="navigate('/testing')"
-                >Начать тестирование</v-btn>
-                <v-spacer />
-            </v-card-actions>
-        </v-card>
-    </v-flex>
-</v-layout>
+    <v-layout row wrap align-start justify-stretch fill-height>
+        <v-flex>
+            <v-card>
+                <v-card-title primary-title>
+                    <h3 class="headline mb-0">Теория</h3>
+                </v-card-title>
+                <v-card-text>
+                    <p v-if="!loaded && !loading" class="center--text">
+                        Выберите тему, нажав на иконку списка в панели сверху.
+                    </p>
+                    <div v-if="loading">
+                        <p>Загрузка...</p>
+                        <v-progress-circular indeterminate color="teal"></v-progress-circular>
+                    </div>
+                    <component
+                        v-if="loaded && !loading"
+                        :is="getComponentName(contentType)"
+                        :content="content"
+                        :path="contentPath"
+                        :content-type="contentType"
+                    ></component>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer />
+                    <v-btn
+                        dark
+                        class="teal"
+                        @click.native="navigate('/testing')"
+                    >Начать тестирование</v-btn>
+                    <v-spacer />
+                </v-card-actions>
+            </v-card>
+        </v-flex>
+    </v-layout>
 </template>
 
 <script>
@@ -46,7 +46,7 @@ const contentTypes = {
 };
 
 export default {
-    name: 'theory',
+    name: 'TheoryTab',
     data() {
         return {
             loaded: false,

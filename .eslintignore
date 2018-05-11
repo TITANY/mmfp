@@ -1,0 +1,6 @@
+node_modules
+.electron-vue
+.idea
+build
+dist
+files

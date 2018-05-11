@@ -1,157 +1,157 @@
 <template>
-<v-container grid-list-lg fluid>
-    <v-layout row wrap v-if="loaded">
+    <v-container grid-list-lg fluid>
+        <v-layout row wrap v-if="loaded">
 
-        <!-- Common test info -->
-        <v-flex xs12 lg6>
-            <v-subheader>Информация о тесте</v-subheader>
-            <v-divider></v-divider>
+            <!-- Common test info -->
+            <v-flex xs12 lg6>
+                <v-subheader>Информация о тесте</v-subheader>
+                <v-divider></v-divider>
 
-            <v-text-field
-                textarea rows="5"
-                label="Описание теста"
-                color="teal"
-                v-model="description"
-            ></v-text-field>
-        </v-flex>
+                <v-text-field
+                    textarea rows="5"
+                    label="Описание теста"
+                    color="teal"
+                    v-model="description"
+                ></v-text-field>
+            </v-flex>
 
-        <v-flex xs12 lg6>
-            <v-subheader>Шкала оценок</v-subheader>
-            <v-divider></v-divider>
-            <v-list two-line subheader>
-                <template v-for="(s, i) in scores.data">
-                    <v-list-tile
-                        avatar
-                        :key="i + '_' + s.title"
-                        @click="editScore(s)"
-                    >
-                        <v-list-tile-content>
-                            <v-list-tile-title>{{ s.title }}</v-list-tile-title>
-                            <v-list-tile-sub-title>{{ scoreSummary(s) }}</v-list-tile-sub-title>
-                        </v-list-tile-content>
-                        <v-list-tile-action>
-                            <v-btn
-                                icon
-                                ripple
-                                @click.stop="removeScore(i)"
-                            ><v-icon color="red">delete_forever</v-icon></v-btn>
-                        </v-list-tile-action>
-                    </v-list-tile>
-                </template>
-            </v-list>
-            <div class="text-xs-right">
-                <v-btn
-                    dark color="teal"
-                    @click="addScore"
-                ><v-icon>add</v-icon>Добавить оценку</v-btn>
-            </div>
-        </v-flex>
-
-        <!-- Question groups -->
-        <v-flex xs12 lg4>
-            <v-subheader>Группы вопросов</v-subheader>
-            <v-divider class="mb-3"></v-divider>
-
-            <v-list two-line>
-                <template v-for="(g, i) in groups">
-                    <v-list-tile
-                        avatar
-                        :key="i + '_' + g.label"
-                        @click="editGroup(i)"
-                    >
-                        <v-list-tile-content>
-                            <v-list-tile-title>{{ g.label }}</v-list-tile-title>
-                            <v-list-tile-sub-title>Отображать: {{ groupSummary(g.show) }}</v-list-tile-sub-title>
-                        </v-list-tile-content>
-                        <v-list-tile-action>
-                            <v-btn
-                                icon
-                                ripple
-                                @click.stop="removeGroup(i)"
-                            ><v-icon color="red">delete_forever</v-icon></v-btn>
-                        </v-list-tile-action>
-                    </v-list-tile>
-                </template>
-            </v-list>
-
-            <div class="text-xs-right">
-                <v-btn
-                    dark color="teal"
-                    @click="addGroup"
-                ><v-icon>add</v-icon>Добавить группу</v-btn>
-            </div>
-        </v-flex>
-
-        <!-- Test content -->
-        <v-flex xs12 lg8>
-            <v-subheader>Содержимое теста</v-subheader>
-            <v-divider class="mb-3"></v-divider>
-
-            <v-stepper v-model="stepper" non-linear>
-                <v-stepper-header>
-                    <template v-for="(test, i) in tests">
-                        <v-divider v-if="i > 0"></v-divider>
-                        <v-stepper-step
-                            editable
-                            :step="i + 1"
-                            :key="test.uuid"
-                        ></v-stepper-step>
+            <v-flex xs12 lg6>
+                <v-subheader>Шкала оценок</v-subheader>
+                <v-divider></v-divider>
+                <v-list two-line subheader>
+                    <template v-for="(s, i) in scores.data">
+                        <v-list-tile
+                            avatar
+                            :key="i + '_' + s.title"
+                            @click="editScore(s)"
+                        >
+                            <v-list-tile-content>
+                                <v-list-tile-title>{{ s.title }}</v-list-tile-title>
+                                <v-list-tile-sub-title>{{ scoreSummary(s) }}</v-list-tile-sub-title>
+                            </v-list-tile-content>
+                            <v-list-tile-action>
+                                <v-btn
+                                    icon
+                                    ripple
+                                    @click.stop="removeScore(i)"
+                                ><v-icon color="red">delete_forever</v-icon></v-btn>
+                            </v-list-tile-action>
+                        </v-list-tile>
                     </template>
-                </v-stepper-header>
-                <v-stepper-items>
-                    <v-stepper-content
-                        v-for="(test, i) in tests"
-                        :key="test.uuid"
-                        :step="i + 1"
-                    >
-                        <question-editor
-                            :groups="groups"
-                            :value="test"
-                            :answers="test.answers"
-                            @input="onQuestionChanged(i, $event)"
-                            @answers-changed="onAnswersChanged(i, $event)"
-                        ></question-editor>
-                        <v-divider></v-divider>
+                </v-list>
+                <div class="text-xs-right">
+                    <v-btn
+                        dark color="teal"
+                        @click="addScore"
+                    ><v-icon>add</v-icon>Добавить оценку</v-btn>
+                </div>
+            </v-flex>
 
-                        <component
-                            :is="getComponentNameFor(test)"
-                            question="Выберите верные варианты ответа на вопрос:"
-                            :answers="test.answers"
-                            :value="getAnswer(i)"
-                            :finished="false"
-                            @input="setAnswer(i, $event)"
-                        ></component>
-                    </v-stepper-content>
-                </v-stepper-items>
-            </v-stepper>
+            <!-- Question groups -->
+            <v-flex xs12 lg4>
+                <v-subheader>Группы вопросов</v-subheader>
+                <v-divider class="mb-3"></v-divider>
 
-            <div class="text-xs-right">
-                <v-btn
-                    dark color="red"
-                    @click="removeCurrentQuestion"
-                ><v-icon>delete</v-icon>Удалить вопрос</v-btn>
-                <v-btn
-                    dark color="teal"
-                    @click="addQuestion"
-                ><v-icon>add</v-icon>Добавить вопрос</v-btn>
-            </div>
-        </v-flex>
-    </v-layout>
+                <v-list two-line>
+                    <template v-for="(g, i) in groups">
+                        <v-list-tile
+                            avatar
+                            :key="i + '_' + g.label"
+                            @click="editGroup(i)"
+                        >
+                            <v-list-tile-content>
+                                <v-list-tile-title>{{ g.label }}</v-list-tile-title>
+                                <v-list-tile-sub-title>Отображать: {{ groupSummary(g.show) }}</v-list-tile-sub-title>
+                            </v-list-tile-content>
+                            <v-list-tile-action>
+                                <v-btn
+                                    icon
+                                    ripple
+                                    @click.stop="removeGroup(i)"
+                                ><v-icon color="red">delete_forever</v-icon></v-btn>
+                            </v-list-tile-action>
+                        </v-list-tile>
+                    </template>
+                </v-list>
 
-    <edit-group-dialog
-        :show="showGroupDialog"
-        :value="selectedGroup"
-        @input="onGroupChanged"
-        @shown="showGroupDialog = $event"
-    ></edit-group-dialog>
+                <div class="text-xs-right">
+                    <v-btn
+                        dark color="teal"
+                        @click="addGroup"
+                    ><v-icon>add</v-icon>Добавить группу</v-btn>
+                </div>
+            </v-flex>
 
-    <score-editor-dialog
-        :show="showScoreDialog"
-        :value="selectedScore"
-        @input="onScoreChanged"
-        @shown="showScoreDialog = $event"
-    ></score-editor-dialog>
-</v-container>
+            <!-- Test content -->
+            <v-flex xs12 lg8>
+                <v-subheader>Содержимое теста</v-subheader>
+                <v-divider class="mb-3"></v-divider>
+
+                <v-stepper v-model="stepper" non-linear>
+                    <v-stepper-header>
+                        <template v-for="(test, i) in tests">
+                            <v-divider v-if="i > 0" :key="i"></v-divider>
+                            <v-stepper-step
+                                editable
+                                :step="i + 1"
+                                :key="test.uuid"
+                            ></v-stepper-step>
+                        </template>
+                    </v-stepper-header>
+                    <v-stepper-items>
+                        <v-stepper-content
+                            v-for="(test, i) in tests"
+                            :key="test.uuid"
+                            :step="i + 1"
+                        >
+                            <question-editor
+                                :groups="groups"
+                                :value="test"
+                                :answers="test.answers"
+                                @input="onQuestionChanged(i, $event)"
+                                @answers-changed="onAnswersChanged(i, $event)"
+                            ></question-editor>
+                            <v-divider></v-divider>
+
+                            <component
+                                :is="getComponentNameFor(test)"
+                                question="Выберите верные варианты ответа на вопрос:"
+                                :answers="test.answers"
+                                :value="getAnswer(i)"
+                                :finished="false"
+                                @input="setAnswer(i, $event)"
+                            ></component>
+                        </v-stepper-content>
+                    </v-stepper-items>
+                </v-stepper>
+
+                <div class="text-xs-right">
+                    <v-btn
+                        dark color="red"
+                        @click="removeCurrentQuestion"
+                    ><v-icon>delete</v-icon>Удалить вопрос</v-btn>
+                    <v-btn
+                        dark color="teal"
+                        @click="addQuestion"
+                    ><v-icon>add</v-icon>Добавить вопрос</v-btn>
+                </div>
+            </v-flex>
+        </v-layout>
+
+        <edit-group-dialog
+            :show="showGroupDialog"
+            :value="selectedGroup"
+            @input="onGroupChanged"
+            @shown="showGroupDialog = $event"
+        ></edit-group-dialog>
+
+        <score-editor-dialog
+            :show="showScoreDialog"
+            :value="selectedScore"
+            @input="onScoreChanged"
+            @shown="showScoreDialog = $event"
+        ></score-editor-dialog>
+    </v-container>
 </template>
 
 <script>
@@ -171,7 +171,7 @@ const componentNames = {
 };
 
 export default {
-    name: 'tests-tab-content',
+    name: 'TestsTabContent',
     props: {
         'value': {
             type: Object,

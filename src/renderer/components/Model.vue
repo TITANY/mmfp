@@ -1,35 +1,35 @@
 <template>
-<login-protector>
-    <v-layout row wrap justify-center>
-        <v-flex>
-            <v-card>
-                <v-card-title>
-                    <h3 class="headline mb-0">Моделирование</h3>
-                </v-card-title>
-                <v-card-text>
-                    <p v-if="!loaded && !loading" class="center--text">
-                        Выберите тему, нажав на иконку списка в панели сверху.
-                    </p>
-                    <div v-if="loading">
-                        <p>Загрузка...</p>
-                        <v-progress-circular indeterminate color="teal"></v-progress-circular>
-                    </div>
-                    <div v-if="error">
-                        <v-alert color="error" icon="warning" value="true">
-                            {{ error }}
-                        </v-alert>
-                    </div>
-                    <component
-                        v-if="loaded && !loading"
-                        :is="getComponentName(contentType)"
-                        :content="content"
-                        :content-type="contentType"
-                    ></component>
-                </v-card-text>
-            </v-card>
-        </v-flex>
-    </v-layout>
-</login-protector>
+    <login-protector>
+        <v-layout row wrap justify-center>
+            <v-flex>
+                <v-card>
+                    <v-card-title>
+                        <h3 class="headline mb-0">Моделирование</h3>
+                    </v-card-title>
+                    <v-card-text>
+                        <p v-if="!loaded && !loading" class="center--text">
+                            Выберите тему, нажав на иконку списка в панели сверху.
+                        </p>
+                        <div v-if="loading">
+                            <p>Загрузка...</p>
+                            <v-progress-circular indeterminate color="teal"></v-progress-circular>
+                        </div>
+                        <div v-if="error">
+                            <v-alert color="error" icon="warning" value="true">
+                                {{ error }}
+                            </v-alert>
+                        </div>
+                        <component
+                            v-if="loaded && !loading"
+                            :is="getComponentName(contentType)"
+                            :content="content"
+                            :content-type="contentType"
+                        ></component>
+                    </v-card-text>
+                </v-card>
+            </v-flex>
+        </v-layout>
+    </login-protector>
 </template>
 
 <script>
@@ -43,7 +43,7 @@ const componentsForTypes = {
 };
 
 export default {
-    name: 'model-view',
+    name: 'ModelView',
 
     data() {
         return {

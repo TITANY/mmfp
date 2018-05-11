@@ -1,25 +1,25 @@
 <template>
-<div>
-    <v-subheader>{{ question }}</v-subheader>
-    <v-checkbox
-        v-for="(answer, j) in answers"
-        v-model="chosenAnswer"
-        :label="answer.label"
-        :value="answer.id"
-        :class="getClass(answer)"
-        color="teal"
-        :disabled="finished"
-        hide-details
-        :key="j + '_' + answer.label"
-    ></v-checkbox>
-</div>
+    <div>
+        <v-subheader>{{ question }}</v-subheader>
+        <v-checkbox
+            v-for="(answer, j) in answers"
+            v-model="chosenAnswer"
+            :label="answer.label"
+            :value="answer.id"
+            :class="getClass(answer)"
+            color="teal"
+            :disabled="finished"
+            hide-details
+            :key="j + '_' + answer.label"
+        ></v-checkbox>
+    </div>
 </template>
 
 <script>
 import isEqual from 'lodash/isEqual';
 
 export default {
-    name: 'test-checkboxes',
+    name: 'TestCheckboxes',
     props: {
         'value': Array,
         'question': String,

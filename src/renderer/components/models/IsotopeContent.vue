@@ -1,75 +1,79 @@
 <template>
-<div class="isotope-content-model mathjax">
-    <v-subheader>Начальные параметры</v-subheader>
+    <div class="isotope-content-model mathjax">
+        <v-subheader>Начальные параметры</v-subheader>
 
-    <v-container fluid>
-        <v-layout row wrap align-center>
-            <template
-                v-for="(val, key) in fields"
-            >
-                <v-flex xs2 md1 text-xs-right pr-3>${{ val }}$</v-flex>
-                <v-flex xs10 md11 lg5>
-                    <v-text-field
-                        single-line
-                        v-model="model[key]"
-                        label="Значение"
-                    ></v-text-field>
-                </v-flex>
-            </template>
-        </v-layout>
-    </v-container>
+        <v-container fluid>
+            <v-layout row wrap align-center>
+                <template
+                    v-for="(val, key) in fields"
+                >
+                    <v-flex xs2 md1 text-xs-right pr-3 :key="key + '_1'">${{ val }}$</v-flex>
+                    <v-flex xs10 md11 lg5 :key="key + '_2'">
+                        <v-text-field
+                            single-line
+                            v-model="model[key]"
+                            label="Значение"
+                        ></v-text-field>
+                    </v-flex>
+                </template>
+            </v-layout>
+        </v-container>
 
-    <div class="text-xs-right">
-        <v-btn
-            flat
-            @click="showConstantsDialog = true"
-        >Изменить константы</v-btn>
-        <v-btn
-            dark color="teal"
-            @click="refreshModel"
-        >Рассчитать</v-btn>
+        <div class="text-xs-right">
+            <v-btn
+                flat
+                @click="showConstantsDialog = true"
+            >Изменить константы</v-btn>
+            <v-btn
+                dark color="teal"
+                @click="refreshModel"
+            >Рассчитать</v-btn>
+        </div>
+        <v-divider></v-divider>
+        <v-subheader>Графики зависимостей</v-subheader>
+        <v-divider></v-divider>
+
+        <div v-show="false" class="view-source">
+            <script
+                type="application/x-math-plot"
+                data-y="c_5"
+                :data-label="c5z"
+            >{{ c5 }}</script>
+
+            <v-divider></v-divider>
+
+            <script
+                type="application/x-math-plot"
+                data-y="c_9"
+                :data-label="c9z"
+            >{{ c9 }}</script>
+
+            <v-divider></v-divider>
+
+            <script
+                type="application/x-math-plot"
+                data-y="c_0"
+                :data-label="c0z"
+            >{{ c0 }}</script>
+
+            <v-divider></v-divider>
+
+            <script
+                type="application/x-math-plot"
+                data-y="c_1"
+                :data-label="c1z"
+            >{{ c1 }}</script>
+        </div>
+        <div class="view-destination">Отрисовка...</div>
+
+        <constants-dialog
+            :sigma="model.sigma"
+            :def-vals="defSigma"
+            :show="showConstantsDialog"
+            @input="changeConstants"
+            @shown="showConstantsDialog = $event"
+        ></constants-dialog>
     </div>
-    <v-divider></v-divider>
-    <v-subheader>Графики зависимостей</v-subheader>
-    <v-divider></v-divider>
-
-    <div v-show="false" class="view-source">
-        <script type="application/x-math-plot"
-            data-y="c_5"
-            :data-label="c5z"
-        >{{ c5 }}</script>
-
-        <v-divider></v-divider>
-        
-        <script type="application/x-math-plot"
-            data-y="c_9"
-            :data-label="c9z"
-        >{{ c9 }}</script>
-
-        <v-divider></v-divider>
-
-        <script type="application/x-math-plot"
-            data-y="c_0"
-            :data-label="c0z"
-        >{{ c0 }}</script>
-
-        <v-divider></v-divider>
-
-        <script type="application/x-math-plot"
-            data-y="c_1"
-            :data-label="c1z"
-        >{{ c1 }}</script>
-    </div>
-    <div class="view-destination">Отрисовка...</div>
-
-    <constants-dialog
-        :sigma="model.sigma"
-        :def-vals="defSigma"
-        :show="showConstantsDialog"
-        @input="changeConstants"
-        @shown="showConstantsDialog = $event"
-    ></constants-dialog>
-</div>
 </template>
 
 <script>
@@ -94,7 +98,7 @@ const getRenderableFn = (name, model) => model.formulas()[name].replace(/z/g, 'x
 const getWritableFn = (name, model) => model.formulas()[name].replace(/(\.[0-9]{3})([0-9]+)/g, '$1');
 
 export default {
-    name: 'isotope-content',
+    name: 'IsotopeContent',
     props: {
         content: String
     },

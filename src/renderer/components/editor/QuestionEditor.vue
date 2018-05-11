@@ -1,102 +1,102 @@
 <template>
-<div>
-    <v-subheader>Общая информация</v-subheader>
+    <div>
+        <v-subheader>Общая информация</v-subheader>
 
-    <v-text-field
-        label="Текст вопроса"
-        v-model="question"
-        prepend-icon="help"
-        required
-    ></v-text-field>
-
-    <v-select
-        :items="qTypesList"
-        v-model="qType"
-        label="Тип вопроса"
-        item-text="label"
-        item-value="type"
-        prepend-icon="device_hub"
-        required
-    ></v-select>
-
-    <v-select
-        :items="checkTypesList"
-        v-model="checkType"
-        label="Тип проверки ответа"
-        item-text="label"
-        item-value="type"
-        prepend-icon="check_circle"
-        required
-    ></v-select>
-
-    <v-select
-        :items="groupsList"
-        v-model="qGroup"
-        label="Группа"
-        item-text="label"
-        item-value="id"
-        prepend-icon="group_work"
-        required
-    ></v-select>
-
-    <v-divider></v-divider>
-    <v-subheader>Начисление очков</v-subheader>
-
-    <template
-        v-for="(s, i) in selectedCheckTypeScores"
-    >
         <v-text-field
-            :key="i + '_' + s.name"
-            :label="s.label"
-            :value="getScoreValue(s.name)"
-            @input="setScoreValue(s.name, $event)"
+            label="Текст вопроса"
+            v-model="question"
+            prepend-icon="help"
+            required
         ></v-text-field>
-    </template>
-    <v-divider></v-divider>
 
-    <shown-editor
-        v-model="shownAnswers"
-    >Показывать ответов:</shown-editor>
-    <v-divider></v-divider>
+        <v-select
+            :items="qTypesList"
+            v-model="qType"
+            label="Тип вопроса"
+            item-text="label"
+            item-value="type"
+            prepend-icon="device_hub"
+            required
+        ></v-select>
 
-    <shown-editor
-        v-model="shownCorrect"
-        v-if="shownCorrectEditable"
-    >Показывать правильных ответов:</shown-editor>
+        <v-select
+            :items="checkTypesList"
+            v-model="checkType"
+            label="Тип проверки ответа"
+            item-text="label"
+            item-value="type"
+            prepend-icon="check_circle"
+            required
+        ></v-select>
 
-    <v-dialog
-        v-model="changeAnswersDialog"
-        max-width="500px"
-        persistent
-    >
-        <v-btn
-            dark color="teal"
-            slot="activator"
-            @click="openChangeAnswersDialog"
-        >Изменить ответы</v-btn>
-        <v-card>
-            <v-card-text>
-                <p>Введите варианты ответов (по одному на строку):</p>
-                <v-text-field
-                    label="Список ответов"
-                    v-model="answersText"
-                    textarea rows="10"
-                    required
-                ></v-text-field>
-            </v-card-text>
-            <v-card-actions>
-                <v-btn
-                    flat
-                    @click="closeChangeAnswersDialog"
-                >Отмена</v-btn>
-                <v-btn
-                    dark color="teal"
-                    @click="applyChangeAnswers"
-                >Применить</v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
-</div>
+        <v-select
+            :items="groupsList"
+            v-model="qGroup"
+            label="Группа"
+            item-text="label"
+            item-value="id"
+            prepend-icon="group_work"
+            required
+        ></v-select>
+
+        <v-divider></v-divider>
+        <v-subheader>Начисление очков</v-subheader>
+
+        <template
+            v-for="(s, i) in selectedCheckTypeScores"
+        >
+            <v-text-field
+                :key="i + '_' + s.name"
+                :label="s.label"
+                :value="getScoreValue(s.name)"
+                @input="setScoreValue(s.name, $event)"
+            ></v-text-field>
+        </template>
+        <v-divider></v-divider>
+
+        <shown-editor
+            v-model="shownAnswers"
+        >Показывать ответов:</shown-editor>
+        <v-divider></v-divider>
+
+        <shown-editor
+            v-model="shownCorrect"
+            v-if="shownCorrectEditable"
+        >Показывать правильных ответов:</shown-editor>
+
+        <v-dialog
+            v-model="changeAnswersDialog"
+            max-width="500px"
+            persistent
+        >
+            <v-btn
+                dark color="teal"
+                slot="activator"
+                @click="openChangeAnswersDialog"
+            >Изменить ответы</v-btn>
+            <v-card>
+                <v-card-text>
+                    <p>Введите варианты ответов (по одному на строку):</p>
+                    <v-text-field
+                        label="Список ответов"
+                        v-model="answersText"
+                        textarea rows="10"
+                        required
+                    ></v-text-field>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn
+                        flat
+                        @click="closeChangeAnswersDialog"
+                    >Отмена</v-btn>
+                    <v-btn
+                        dark color="teal"
+                        @click="applyChangeAnswers"
+                    >Применить</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+    </div>
 </template>
 
 <script>
@@ -129,7 +129,7 @@ const checkTypesList = [
 ];
 
 export default {
-    name: 'question-editor',
+    name: 'QuestionEditor',
     props: {
         value: Object,
         groups: Array,

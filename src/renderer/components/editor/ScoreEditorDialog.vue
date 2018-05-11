@@ -1,45 +1,45 @@
 <template>
-<v-dialog max-width="400px" v-model="dialog">
-    <v-card>
-        <v-card-title>Отметка</v-card-title>
-        <v-card-text>
-            <v-text-field
-                label="Название"
-                v-model="title"
-                prepend-icon="title" color="teal"
-                required
-            ></v-text-field>
+    <v-dialog max-width="400px" v-model="dialog">
+        <v-card>
+            <v-card-title>Отметка</v-card-title>
+            <v-card-text>
+                <v-text-field
+                    label="Название"
+                    v-model="title"
+                    prepend-icon="title" color="teal"
+                    required
+                ></v-text-field>
 
-            <v-switch
-                label="По умолчанию"
-                v-model="isDefault"
-                color="teal"
-            ></v-switch>
+                <v-switch
+                    label="По умолчанию"
+                    v-model="isDefault"
+                    color="teal"
+                ></v-switch>
 
-            <v-text-field
-                v-if="!isDefault"
-                label="Минимальный балл"
-                v-model="startsFrom"
-                prepend-icon="stars" color="teal"
-                required
-                :rules="[isNumber]"
-            ></v-text-field>
-        </v-card-text>
+                <v-text-field
+                    v-if="!isDefault"
+                    label="Минимальный балл"
+                    v-model="startsFrom"
+                    prepend-icon="stars" color="teal"
+                    required
+                    :rules="[isNumber]"
+                ></v-text-field>
+            </v-card-text>
 
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-                dark color="teal"
-                @click.native.prevent="dialog = false"
-            >Готово</v-btn>
-        </v-card-actions>
-    </v-card>
-</v-dialog>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                    dark color="teal"
+                    @click.native.prevent="dialog = false"
+                >Готово</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script>
 export default {
-    name: 'score-editor-dialog',
+    name: 'ScoreEditorDialog',
     props: {
         show: Boolean,
         value: Object

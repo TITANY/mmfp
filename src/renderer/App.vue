@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <v-app>
+        <!-- <v-app>
             <v-navigation-drawer
                 fixed
                 clipped
@@ -11,14 +11,14 @@
             >
                 <v-list>
                     <template v-for="(item, i) in sidemenu">
-                        <v-slide-y-transition mode="out-in">
+                        <v-slide-y-transition mode="out-in" :key="i + '_transition'">
                             <v-list-tile
                                 v-if="item.type === 'item'"
-                                
+
                                 :to="item.to || '/dummy'"
                                 :key="i + '_' + item.to"
                                 @click.native="item.action && sidemenuAction(item.action)"
-                                
+
                             >
                                 <v-list-tile-action>
                                     <v-icon v-html="item.icon"></v-icon>
@@ -103,7 +103,8 @@
                 <v-spacer></v-spacer>
                 <span class="white--text">&copy; 2017, TITANY</span>
             </v-footer>
-        </v-app>
+        </v-app> -->
+        Hello
     </div>
 </template>
 
@@ -120,16 +121,16 @@ import {
 } from './utils/dialogs';
 import { changeLoggedIn } from './utils/protect';
 
-import UserInfo from './components/sidemenu/UserInfo';
-import MmfpDialog from './components/MmfpDialog';
-import TopicsList from './components/TopicsList';
-import SettingsContent from './components/SettingsContent';
+// import UserInfo from './components/sidemenu/UserInfo';
+// import MmfpDialog from './components/MmfpDialog';
+// import TopicsList from './components/TopicsList';
+// import SettingsContent from './components/SettingsContent';
 
 
 const noop = () => {};
 
 export default {
-    name: 'mmfp',
+    name: 'MmfpApp',
     data: () => ({
         drawer: true,
         right: true,
@@ -271,7 +272,7 @@ export default {
         this.dialogCallbacks = [];
     },
 
-    components: { UserInfo, MmfpDialog, TopicsList, SettingsContent },
+    // components: { UserInfo, MmfpDialog, TopicsList, SettingsContent },
 
     watch: {
         user: {

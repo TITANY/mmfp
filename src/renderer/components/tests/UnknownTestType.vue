@@ -4,7 +4,7 @@
 
 <script>
 export default {
-    name: 'unknown-test-type',
+    name: 'UnknownTestType',
     props: {
         'type': String
     }

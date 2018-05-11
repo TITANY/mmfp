@@ -1,8 +1,6 @@
 <template>
-<div>
-    <div v-html="content" class="html-part-viewer-content mathjax">
+    <div v-html="content" class="html-part-viewer-content mathjax pa-3">
     </div>
-</div>
 </template>
 
 <script>
@@ -22,7 +20,7 @@ const getRandomId = () => 'formula_' + new Array(16).fill(null)
     .join('');
 
 export default {
-    name: 'html-part-viewer',
+    name: 'HtmlPartViewer',
     props: {
         'content': {
             type: String,
@@ -106,7 +104,7 @@ export default {
     text-align: center
     padding-top: 0.8em
     padding-bottom: 1em
-    
+
     & .math-plot-label
         font-weight: bold
         padding-top: 0.2em

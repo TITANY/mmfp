@@ -1,33 +1,33 @@
 <template>
-<v-list two-line subheader>
-    <template
-        v-for="(cat, i) in cats"
-    >
-        <v-subheader inset>{{ cat.name }}</v-subheader>
-        <v-list-tile
-            avatar
-            v-for="(topic, j) in cat.content"
-            :title="topic.description"
-            :class="getClassesFor(topic)"
-            :key="j"
-            @click="selectTopic(topic)"
+    <v-list two-line subheader>
+        <template
+            v-for="(cat, i) in cats"
         >
-            <v-list-tile-avatar>
-                <v-icon>{{ getIcon(topic) }}</v-icon>
-            </v-list-tile-avatar>
-            <v-list-tile-content>
-                <v-list-tile-title>{{ topic.name }}</v-list-tile-title>
-                <v-list-tile-sub-title>{{ getDescription(topic) }}</v-list-tile-sub-title>
-            </v-list-tile-content>
-            <v-list-tile-action>
-                <v-btn icon ripple>
-                    <v-icon color="grey lighten-1">folder</v-icon>
-                </v-btn>
-            </v-list-tile-action>
-        </v-list-tile>
-        <v-divider inset></v-divider>
-    </template>
-</v-list>
+            <v-subheader inset :key="i">{{ cat.name }}</v-subheader>
+            <v-list-tile
+                avatar
+                v-for="(topic, j) in cat.content"
+                :title="topic.description"
+                :class="getClassesFor(topic)"
+                :key="j"
+                @click="selectTopic(topic)"
+            >
+                <v-list-tile-avatar>
+                    <v-icon>{{ getIcon(topic) }}</v-icon>
+                </v-list-tile-avatar>
+                <v-list-tile-content>
+                    <v-list-tile-title>{{ topic.name }}</v-list-tile-title>
+                    <v-list-tile-sub-title>{{ getDescription(topic) }}</v-list-tile-sub-title>
+                </v-list-tile-content>
+                <v-list-tile-action>
+                    <v-btn icon ripple>
+                        <v-icon color="grey lighten-1">folder</v-icon>
+                    </v-btn>
+                </v-list-tile-action>
+            </v-list-tile>
+            <v-divider inset :key="i"></v-divider>
+        </template>
+    </v-list>
 </template>
 
 <script>
@@ -75,7 +75,7 @@ const normalizeTopic = t => ({
 });
 
 export default {
-    name: 'topics-list',
+    name: 'TopicsList',
     props: {
         'value': String
     },

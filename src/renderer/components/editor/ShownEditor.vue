@@ -1,43 +1,43 @@
 <template>
-<div>
-    <v-subheader><slot>Отображать:</slot></v-subheader>
+    <div>
+        <v-subheader><slot>Отображать:</slot></v-subheader>
 
-    <v-container fluid>
-        <v-layout row wrap align-center>
-            <v-flex xs12 :md4="collapse">
-                <v-switch
-                    v-model="showAll"
-                    color="teal"
-                    label="Все"
-                ></v-switch>
-            </v-flex>
+        <v-container fluid>
+            <v-layout row wrap align-center>
+                <v-flex xs12 :md4="collapse">
+                    <v-switch
+                        v-model="showAll"
+                        color="teal"
+                        label="Все"
+                    ></v-switch>
+                </v-flex>
 
-            <v-flex xs12 :md4="collapse">
-                <v-text-field
-                    v-if="!showAll"
-                    v-model="showMin"
-                    required
-                    label="От:"
-                    :rules="[notEmpty, isNumber, positive, maxGreaterThanMin]"
-                ></v-text-field>
-            </v-flex>
-            <v-flex xs12 :md4="collapse">
-                <v-text-field
-                    v-if="!showAll"
-                    v-model="showMax"
-                    required
-                    label="До:"
-                    :rules="[notEmpty, isNumber, positive, maxGreaterThanMin]"
-                ></v-text-field>
-            </v-flex>
-        </v-layout>
-    </v-container>
-</div>
+                <v-flex xs12 :md4="collapse">
+                    <v-text-field
+                        v-if="!showAll"
+                        v-model="showMin"
+                        required
+                        label="От:"
+                        :rules="[notEmpty, isNumber, positive, maxGreaterThanMin]"
+                    ></v-text-field>
+                </v-flex>
+                <v-flex xs12 :md4="collapse">
+                    <v-text-field
+                        v-if="!showAll"
+                        v-model="showMax"
+                        required
+                        label="До:"
+                        :rules="[notEmpty, isNumber, positive, maxGreaterThanMin]"
+                    ></v-text-field>
+                </v-flex>
+            </v-layout>
+        </v-container>
+    </div>
 </template>
 
 <script>
 export default {
-    name: 'shown-editor',
+    name: 'ShownEditor',
 
     props: {
         value: Object,

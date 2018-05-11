@@ -24,12 +24,12 @@
                                 <div>Результат: {{ testResult.title }}</div>
                                 <div>Баллы: {{ testResult.score }}</div>
                             </v-alert>
-                            
+
                             <!-- Tests stepper -->
                             <v-stepper v-model="stepper" non-linear class="mb-3">
                                 <v-stepper-header>
                                     <template v-for="(test, i) in tests">
-                                        <v-divider v-if="i > 0"></v-divider>
+                                        <v-divider v-if="i > 0" :key="i"></v-divider>
                                         <v-stepper-step
                                             editable
                                             :step="i + 1"
@@ -97,7 +97,7 @@ const componentNames = {
 };
 
 export default {
-    name: 'testing',
+    name: 'TestingTab',
 
     data() {
         return {
