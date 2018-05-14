@@ -29,7 +29,10 @@
       {
         "from": "node_modules/mathjax",
         "to": "mathjax",
-        "filter": ["**/*", "!**/unpacked/**/*"]
+        "filter": [
+          "**/*",
+          "!**/unpacked/**/*"
+        ]
       }
     ],
     "dmg": {
