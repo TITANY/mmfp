@@ -7,8 +7,10 @@
 	],
 	"SublimeLinter":
 	{
-		"linters": {
-			"eslint": {
+		"linters":
+		{
+			"eslint":
+			{
 				"selector": "text.html.vue, source.js - meta.attribute-with-value"
 			}
 		}

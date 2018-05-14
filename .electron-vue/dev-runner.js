@@ -62,9 +62,9 @@ function startRenderer () {
     const server = new WebpackDevServer(
       compiler,
       {
-        contentBase: path.join(__dirname, '../'),
+        contentBase: path.join(__dirname, '../node_modules/mathjax'),
         quiet: true,
-        setup (app, ctx) {
+        before (app, ctx) {
           app.use(hotMiddleware)
           ctx.middleware.waitUntilValid(() => {
             resolve()
@@ -149,8 +149,8 @@ function greeting () {
   const cols = process.stdout.columns
   let text = ''
 
-  if (cols > 104) text = 'electron-vue'
-  else if (cols > 76) text = 'electron-|vue'
+  if (cols > 104) text = 'MMFP dev'
+  else if (cols > 76) text = 'MMFP|dev'
   else text = false
 
   if (text) {
@@ -159,7 +159,7 @@ function greeting () {
       font: 'simple3d',
       space: false
     })
-  } else console.log(chalk.yellow.bold('\n  electron-vue'))
+  } else console.log(chalk.yellow.bold('\n  mmfp-dev'))
   console.log(chalk.blue('  getting ready...') + '\n')
 }
 

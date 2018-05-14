@@ -73,7 +73,7 @@
                         :width="d.width"
                         @result="onDialogResult(i, $event)"
                     >
-                        <component v-if="d.isComponent" :is="d.componentName" v-bind="this[d.bind]"></component>
+                        <component v-if="d.isComponent" :is="d.componentName" v-bind="getData(d.bind || [])"></component>
                         <div v-else v-text="d.content"></div>
                         <div
                             v-if="d.showTitle"
@@ -107,7 +107,6 @@
         Hello
     </div>
 </template>
-
 <script>
 import openLink from './utils/openlink';
 import eventBus from './utils/eventbus';
@@ -126,6 +125,13 @@ import MmfpDialog from './components/MmfpDialog';
 import TopicsList from './components/TopicsList';
 import SettingsContent from './components/SettingsContent';
 
+// window.MathJax.Hub.Config({
+//     tex2jax: {
+//         inlineMath: [['$', '$'], ['\\(', '\\)']],
+//         processClass: 'mathjax',
+//         ignoreClass: 'no-mathjax'
+//     }
+// });
 
 const noop = () => {};
 
@@ -265,7 +271,7 @@ export default {
             this.$router.push(event);
         });
 
-        this.title = process.cwd();
+        // this.title = process.cwd();
 
         // non-reactive data
         // callbacks:

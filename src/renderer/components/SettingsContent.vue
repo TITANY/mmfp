@@ -5,7 +5,17 @@
             <v-card>
                 <v-card-title class="headline">Общие настройки приложения</v-card-title>
                 <v-card-text>
-                    На данный момент настройки недоступны.
+                    <div>
+                        Путь к файлам приложения: <code>{{ appDataPath }}</code>
+                        <v-tooltip right>
+                            <span>Открыть папку</span>
+                            <v-btn
+                                flat icon ripple
+                                slot="activator"
+                                @click="openAppDataFolder"
+                            ><v-icon>folder_open</v-icon></v-btn>
+                        </v-tooltip>
+                    </div>
                 </v-card-text>
             </v-card>
         </v-expansion-panel-content>
@@ -47,14 +57,16 @@
 </template>
 
 <script>
-import { webFrame } from 'electron';
+import { webFrame, shell } from 'electron';
+import { APP_DATA } from '@/../files';
 
 export default {
     name: 'SettingsContent',
     // props: 'settings',
     data() {
-        console.log(webFrame.getZoomFactor());
-        return {};
+        return {
+            appDataPath: APP_DATA
+        };
     },
 
     computed: {
@@ -79,6 +91,12 @@ export default {
 
         su() {
             return this.$store.state.user.superuser;
+        }
+    },
+
+    methods: {
+        openAppDataFolder() {
+            shell.openItem(APP_DATA);
         }
     }
 };

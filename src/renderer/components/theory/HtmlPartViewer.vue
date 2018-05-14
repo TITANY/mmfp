@@ -65,10 +65,16 @@ export default {
             });
 
             // mathjax
-            window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub]);
+            try {
+                window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub]);
+                console.log('MathJax Typeset');
+            } catch (error) {
+                console.error('MathJax error:', error);
+            }
 
             // images
             const vm = this;
+            console.log('Before images');
             $content.find('img').each(function () {
                 const $this = $(this);
                 if ($this.attr('data-processed') !== 'true') {
@@ -76,6 +82,8 @@ export default {
                     const src = $.trim($this.attr('src'));
                     $this.attr('data-src', src);
                     $this.attr('src', path.join(vm.path, src));
+                    console.log('Pre:', vm.path);
+                    console.log('Src:', src);
                 }
             });
 

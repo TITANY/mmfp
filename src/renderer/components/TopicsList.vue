@@ -3,7 +3,7 @@
         <template
             v-for="(cat, i) in cats"
         >
-            <v-subheader inset :key="i">{{ cat.name }}</v-subheader>
+            <v-subheader inset :key="i + '_subheader'">{{ cat.name }}</v-subheader>
             <v-list-tile
                 avatar
                 v-for="(topic, j) in cat.content"
@@ -25,7 +25,7 @@
                     </v-btn>
                 </v-list-tile-action>
             </v-list-tile>
-            <v-divider inset :key="i"></v-divider>
+            <v-divider inset :key="i + '_divider'"></v-divider>
         </template>
     </v-list>
 </template>

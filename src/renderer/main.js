@@ -1,22 +1,19 @@
+/* eslint import/first: 0 */
+// require('@/assets/mathjax/tex');
 import Vue from 'vue';
 import Vuetify from 'vuetify';
-import Vuex from 'vuex';
 
-import router from './router';
-import createStore from './vuex';
 import App from './App';
-
+import router from './router';
+import store from './store';
 
 Vue.use(Vuetify);
-Vue.use(Vuex);
 Vue.config.productionTip = false;
-
-// for theory formulas
 
 /* eslint-disable no-new */
 new Vue({
     components: { App },
     router,
-    store: createStore(),
+    store,
     template: '<App/>'
 }).$mount('#app');

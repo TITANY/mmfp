@@ -1,6 +1,13 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
+import WelcomeView from '@/components/WelcomeView';
+import Login from '@/components/Login';
+import TheoryTab from '@/components/TheoryTab';
+import Testing from '@/components/Testing';
+import Model from '@/components/Model';
+import EditorTab from '@/components/EditorTab';
+
 
 Vue.use(Router);
 
@@ -9,32 +16,32 @@ export default new Router({
         {
             path: '/',
             name: 'welcome-view',
-            component: require('@/components/WelcomeView')
+            component: WelcomeView
         },
         {
             path: '/login',
             name: 'login',
-            component: require('@/components/Login')
+            component: Login
         },
         {
             path: '/theory',
             name: 'theory',
-            component: require('@/components/Theory')
+            component: TheoryTab
         },
         {
             path: '/testing',
             name: 'testing',
-            component: require('@/components/Testing')
+            component: Testing
         },
         {
             path: '/model',
             name: 'model',
-            component: require('@/components/Model')
+            component: Model
         },
         {
             path: '/editor',
             name: 'editor',
-            component: require('@/components/Editor')
+            component: EditorTab
         },
         {
             path: '/dummy',

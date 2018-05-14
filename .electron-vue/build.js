@@ -1,6 +1,6 @@
 'use strict'
 
-process.env.NODE_ENV = 'development'
+process.env.NODE_ENV = 'production'
 
 const { say } = require('cfonts')
 const chalk = require('chalk')
@@ -115,8 +115,8 @@ function greeting () {
   const cols = process.stdout.columns
   let text = ''
 
-  if (cols > 85) text = 'lets-build'
-  else if (cols > 60) text = 'lets-|build'
+  if (cols > 85) text = 'build mmfp'
+  else if (cols > 60) text = 'build|mmfp'
   else text = false
 
   if (text && !isCI) {

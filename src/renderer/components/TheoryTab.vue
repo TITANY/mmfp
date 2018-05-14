@@ -40,7 +40,6 @@ import bus from '../utils/eventbus';
 import { topics } from '../../files';
 import components from './theory';
 
-
 const contentTypes = {
     'html_part': 'html-part-viewer'
 };
@@ -85,6 +84,8 @@ export default {
                     this.contentType = theory.type;
                     this.checked = theory.checked;
                     this.contentPath = topic.path;
+
+                    console.log(topic);
 
                     this.loading = false;
                     this.loaded = true;

@@ -10,14 +10,13 @@
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
-    "dev": "node .electron-vue/dev-runner.js",
+    "dev": "cross-env NODE_ENV=development node .electron-vue/dev-runner.js",
     "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter src",
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src",
     "pack": "npm run pack:main && npm run pack:renderer",
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
-    "postinstall": "npm run lint:fix",
-    "rebuild": "electron-rebuild"
+    "postinstall": "npm run lint:fix"
   },
   "build": {
     "productName": "mmfp",
@@ -26,7 +25,12 @@
       "output": "build"
     },
     "files": [
-      "dist/electron/**/*"
+      "dist/electron/**/*",
+      {
+        "from": "node_modules/mathjax",
+        "to": "mathjax",
+        "filter": ["**/*", "!**/unpacked/**/*"]
+      }
     ],
     "dmg": {
       "contents": [
@@ -48,7 +52,7 @@
     },
     "win": {
       "icon": "build/icons/icon.ico",
-      "target": "nsis"
+      "target": "portable"
     },
     "linux": {
       "icon": "build/icons",
@@ -63,10 +67,10 @@
     "mathjax": "^2.7.2",
     "mathjs": "^3.16.5",
     "mkdirp": "^0.5.1",
-    "vue": "^2.5.0",
-    "vue-router": "^2.5.3",
     "vuetify": "0.17.1",
-    "vuex": "^3.0.1"
+    "vue": "^2.3.3",
+    "vue-router": "^2.5.3",
+    "vuex": "^2.3.1"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
@@ -110,7 +114,7 @@
     "stylus-loader": "^3.0.1",
     "url-loader": "^0.5.9",
     "vue-html-loader": "^1.2.4",
-    "vue-loader": "^12.2.2",
+    "vue-loader": "^13.0.5",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.4.2",
     "webpack": "^3.5.2",

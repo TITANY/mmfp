@@ -2,11 +2,15 @@ import path from 'path';
 import { v4 } from 'uuid';
 import { mkdir, readDir, readJson, writeFile, writeJson } from './fs';
 import readSection from './section';
+import { remote } from 'electron';
+const app = remote.app;
 
-const cwd = process.cwd();
+const cwd = path.join(app.getPath('appData'), 'mmfp');
 const TOPICS_DIR = path.join('files', 'topics');
 const TOPICS_DIR_ABS = path.resolve(cwd, TOPICS_DIR);
 const TOPIC_JSON = 'topic.json';
+
+export const APP_DATA = cwd;
 
 export const topics = {
     list() {
@@ -54,7 +58,7 @@ export const topics = {
                         return readSection(topic.model, path.resolve(TOPICS_DIR_ABS, dirname));
                     },
 
-                    path: path.join(TOPICS_DIR, dirname)
+                    path: path.join(TOPICS_DIR_ABS, dirname)
                 };
             })
         ;
