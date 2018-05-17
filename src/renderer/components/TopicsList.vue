@@ -27,6 +27,11 @@
             </v-list-tile>
             <v-divider inset :key="i + '_divider'"></v-divider>
         </template>
+        <v-list-tile v-if="!cats.length">
+            <v-list-tile-content>
+                <div class="text-xs-center body-2 grey--text" style="width: 100%;">(тем не найдено)</div>
+            </v-list-tile-content>
+        </v-list-tile>
     </v-list>
 </template>
 

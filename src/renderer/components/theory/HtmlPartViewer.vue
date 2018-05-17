@@ -2,7 +2,6 @@
     <div v-html="content" class="html-part-viewer-content mathjax pa-3">
     </div>
 </template>
-
 <script>
 import path from 'path';
 import $ from 'jquery';
@@ -35,6 +34,8 @@ export default {
         parseScripts() {
             // formulas
             const $content = $('.html-part-viewer-content');
+            if ($content.length === 0) return; // component not active
+
             const formulas = $content.find('script[type="application/x-math-plot"]');
 
             formulas.each(function () {
@@ -76,6 +77,7 @@ export default {
             const vm = this;
             console.log('Before images');
             $content.find('img').each(function () {
+                console.log('Images');
                 const $this = $(this);
                 if ($this.attr('data-processed') !== 'true') {
                     $this.attr('data-processed', 'true');
@@ -100,13 +102,13 @@ export default {
         this.parseScripts();
     },
     activated() {
+        console.log('FUCK');
         if (!this.scriptsParsed) {
             this.parseScripts();
         }
     }
 };
 </script>
-
 <style lang="stylus">
 .math-plot-wrapper
     text-align: center
@@ -116,4 +118,8 @@ export default {
     & .math-plot-label
         font-weight: bold
         padding-top: 0.2em
+
+.html-part-viewer-content
+    & ul
+        padding-left: 2em
 </style>

@@ -21,9 +21,7 @@ export default new Vuex.Store({
             loggedIn: false,
             superuser: false,
             name: null
-        },
-
-        settings: {}
+        }
     },
 
     mutations: {
@@ -43,6 +41,18 @@ export default new Vuex.Store({
                 loggedIn: true,
                 superuser,
                 name
+            };
+        },
+
+        logout(state) {
+            state.user = {
+                loggedIn: false,
+                superuser: false,
+                name: null
+            };
+            state.tests = {
+                finished: false,
+                result: null
             };
         }
     }

@@ -32,6 +32,11 @@
                         item-text="label"
                         item-value="value"
                     ></v-select>
+                    <v-switch
+                        label="Тёмная тема"
+                        v-model="darkTheme"
+                        color="teal"
+                    ></v-switch>
                 </v-card-text>
             </v-card>
         </v-expansion-panel-content>
@@ -79,6 +84,13 @@ export default {
             }
         },
 
+        darkTheme: {
+            get() { return this.$store.state.settings.darkTheme; },
+            set(value) {
+                this.$store.commit('settings/setTheme', { dark: value });
+            }
+        },
+
         availableZooms() {
             return new Array(Math.floor((300 - 100) / 20) + 1) // 100..300 step 20
                 .fill(null)
@@ -90,7 +102,7 @@ export default {
         },
 
         su() {
-            return this.$store.state.user.superuser;
+            return this.$store.state.user.superuser && false;
         }
     },
 

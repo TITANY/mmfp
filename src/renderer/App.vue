@@ -1,11 +1,10 @@
 <template>
     <div id="app">
-        <v-app>
+        <v-app :dark="darkTheme" :light="!darkTheme">
             <v-navigation-drawer
                 fixed
                 clipped
                 app
-                light
                 enable-resize-watcher
                 v-model="drawer"
             >
@@ -48,12 +47,22 @@
                 class="teal darken-1"
             >
                 <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
+                <v-tooltip bottom>
+                    <v-btn slot="activator" icon to="/" exact><v-icon>home</v-icon></v-btn>
+                    <span>Начальный экран</span>
+                </v-tooltip>
                 <v-toolbar-title v-text="title"></v-toolbar-title>
 
                 <v-spacer></v-spacer>
 
-                <v-btn icon @click.native="openTopicsList"><v-icon>list</v-icon></v-btn>
-                <v-btn icon @click.native="openSettings"><v-icon>settings</v-icon></v-btn>
+                <v-tooltip bottom>
+                    <v-btn slot="activator" icon @click="openTopicsList"><v-icon>list</v-icon></v-btn>
+                    <span>Список тем</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                    <v-btn slot="activator" icon @click="openSettings"><v-icon>settings</v-icon></v-btn>
+                    <span>Настройки</span>
+                </v-tooltip>
 
             </v-toolbar>
             <v-content app>
@@ -101,16 +110,16 @@
             </v-content>
             <v-footer fixed app dark class="teal lighten-2">
                 <v-spacer></v-spacer>
-                <span class="white--text">&copy; 2017, TITANY</span>
+                <span class="white--text">&copy; 2017-2018, TITANY</span>
             </v-footer>
         </v-app>
         Hello
     </div>
 </template>
 <script>
+import { remote } from 'electron';
 import openLink from './utils/openlink';
 import eventBus from './utils/eventbus';
-import cmd from './utils/cmd';
 import sidemenu from './sidemenu';
 import {
     createComponent,
@@ -124,14 +133,6 @@ import UserInfo from './components/sidemenu/UserInfo';
 import MmfpDialog from './components/MmfpDialog';
 import TopicsList from './components/TopicsList';
 import SettingsContent from './components/SettingsContent';
-
-// window.MathJax.Hub.Config({
-//     tex2jax: {
-//         inlineMath: [['$', '$'], ['\\(', '\\)']],
-//         processClass: 'mathjax',
-//         ignoreClass: 'no-mathjax'
-//     }
-// });
 
 const noop = () => {};
 
@@ -187,6 +188,10 @@ export default {
                 return null;
             }
             return this.preSelectedTopic.meta.id;
+        },
+
+        darkTheme() {
+            return this.$store.state.settings.darkTheme;
         }
     },
     methods: {
@@ -200,23 +205,19 @@ export default {
         },
 
         sidemenuAction: function (action) {
-            console.log(action);
-            if (typeof action === typeof '') {
-                cmd(action);
-            } else {
-                if (action.confirm) {
-                    this.createDialog(
-                        confirmation('Вы действительно хотите закрыть приложение?', 'Выход'),
-                        result => {
-                            if (result === 'yes') {
-                                cmd(action.cmd, action.args);
-                            }
+            if (action.confirm) {
+                this.createDialog(
+                    confirmation(action.confirm[0], action.confirm[1] || 'Подтвердите действие'),
+                    result => {
+                        if (result === 'yes') {
+                            action.fn(this, remote);
+                            return true;
                         }
-                    );
-                } else {
-                    // without confirmation
-                    cmd(action.cmd, action.args);
-                }
+                    }
+                );
+            } else {
+                // without confirmation
+                action.fn(this, remote);
             }
         },
 
@@ -231,7 +232,10 @@ export default {
         },
 
         onDialogResult: function (index, result) {
-            this.dialogCallbacks[index](result);
+            const close = this.dialogCallbacks[index](result);
+            if (close === true) {
+                this.removeDialog(index);
+            }
         },
 
         openTopicsList: function () {
