@@ -10,7 +10,7 @@
                 <v-text-field
                     textarea rows="5"
                     label="Описание теста"
-                    color="teal"
+                    color="primary"
                     v-model="description"
                 ></v-text-field>
             </v-flex>
@@ -41,7 +41,7 @@
                 </v-list>
                 <div class="text-xs-right">
                     <v-btn
-                        dark color="teal"
+                        dark color="primary"
                         @click="addScore"
                     ><v-icon>add</v-icon>Добавить оценку</v-btn>
                 </div>
@@ -76,7 +76,7 @@
 
                 <div class="text-xs-right">
                     <v-btn
-                        dark color="teal"
+                        dark color="primary"
                         @click="addGroup"
                     ><v-icon>add</v-icon>Добавить группу</v-btn>
                 </div>
@@ -131,7 +131,7 @@
                         @click="removeCurrentQuestion"
                     ><v-icon>delete</v-icon>Удалить вопрос</v-btn>
                     <v-btn
-                        dark color="teal"
+                        dark color="primary"
                         @click="addQuestion"
                     ><v-icon>add</v-icon>Добавить вопрос</v-btn>
                 </div>

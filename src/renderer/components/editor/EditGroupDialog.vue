@@ -22,7 +22,7 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                    dark color="teal"
+                    dark color="primary"
                     @click="close"
                 >Готово</v-btn>
             </v-card-actions>

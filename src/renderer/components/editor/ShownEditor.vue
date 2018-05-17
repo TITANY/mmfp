@@ -7,7 +7,7 @@
                 <v-flex xs12 :md4="collapse">
                     <v-switch
                         v-model="showAll"
-                        color="teal"
+                        color="primary"
                         label="Все"
                     ></v-switch>
                 </v-flex>

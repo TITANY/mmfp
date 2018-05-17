@@ -10,17 +10,17 @@
                     <ul class="pl-3">
                         <li>
                             <b>Выберите тему</b>, нажав кнопку
-                            <code><v-icon>list</v-icon></code>
+                            <code class="pa-1"><v-icon>folder_open</v-icon></code>
                             в верхней панели;
                         </li>
                         <li>
                             Авторизуйтесь, вызвав <b>главное меню</b> приложения кнопкой
-                            <code><v-icon>menu</v-icon></code>
+                            <code class="pa-1"><v-icon>menu</v-icon></code>
                             ;
                         </li>
                         <li>
                             Кнопка
-                            <code><v-icon>settings</v-icon></code>
+                            <code class="pa-1"><v-icon>settings</v-icon></code>
                             даёт доступ к <b>настройкам</b> приложения.
                         </li>
                     </ul>

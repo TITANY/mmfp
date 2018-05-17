@@ -2,13 +2,13 @@ export const ACTION_DONE = {
     action: 'close',
     label: 'Готово',
     closes: true,
-    style: { class: ['teal', 'white--text'], flat: false }
+    style: { class: ['primary', 'white--text'], flat: false }
 };
 
 export const ACTION_YES = {
     action: 'yes',
     label: 'Да',
-    style: { class: ['teal', 'white--text'], flat: false }
+    style: { class: ['primary', 'white--text'], flat: false }
 };
 export const ACTION_NO = { action: 'no', label: 'Нет', closes: true };
 
@@ -17,7 +17,7 @@ export const ACTION_APPLY = {
     action: 'apply',
     label: 'Применить',
     closes: true,
-    style: { class: ['teal', 'white--text'], flat: false }
+    style: { class: ['primary', 'white--text'], flat: false }
 };
 
 export const create = ({

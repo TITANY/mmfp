@@ -11,7 +11,7 @@
                     </p>
                     <div v-if="loading">
                         <p>Загрузка...</p>
-                        <v-progress-circular indeterminate color="teal"></v-progress-circular>
+                        <v-progress-circular indeterminate color="primary"></v-progress-circular>
                     </div>
                     <component
                         v-if="loaded && !loading"
@@ -24,8 +24,7 @@
                 <v-card-actions>
                     <v-spacer />
                     <v-btn
-                        dark
-                        class="teal"
+                        dark color="primary"
                         @click.native="navigate('/testing')"
                     >Начать тестирование</v-btn>
                     <v-spacer />

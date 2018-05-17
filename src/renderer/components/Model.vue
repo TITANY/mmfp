@@ -12,7 +12,7 @@
                         </p>
                         <div v-if="loading">
                             <p>Загрузка...</p>
-                            <v-progress-circular indeterminate color="teal"></v-progress-circular>
+                            <v-progress-circular indeterminate color="primary"></v-progress-circular>
                         </div>
                         <div v-if="error">
                             <v-alert color="error" icon="warning" value="true">

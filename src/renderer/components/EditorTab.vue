@@ -26,7 +26,7 @@
                         <v-btn flat @click="createNew">Создать новую</v-btn>
                         <v-btn
                             :dark="selectedTopic !== null"
-                            color="teal"
+                            color="primary"
                             :disabled="selectedTopic === null"
                             @click="edit"
                         >Редактировать</v-btn>

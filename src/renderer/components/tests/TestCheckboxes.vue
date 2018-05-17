@@ -7,7 +7,7 @@
             :label="answer.label"
             :value="answer.id"
             :class="getClass(answer)"
-            color="teal"
+            color="primary"
             :disabled="finished"
             hide-details
             :key="j + '_' + answer.label"

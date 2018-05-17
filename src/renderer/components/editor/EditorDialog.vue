@@ -7,7 +7,7 @@
         :overlay="false"
     >
         <v-card>
-            <v-toolbar dark color="teal" tabs>
+            <v-toolbar dark color="primary" tabs>
                 <v-btn icon @click.native="close" dark>
                     <v-icon>close</v-icon>
                 </v-btn>
@@ -26,7 +26,7 @@
                 <v-tabs
                     fixed icons
                     centered
-                    dark color="teal"
+                    dark color="primary"
                     slider-color="white"
                     v-model="tab"
                     slot="extension"

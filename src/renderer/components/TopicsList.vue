@@ -20,7 +20,10 @@
                     <v-list-tile-sub-title>{{ getDescription(topic) }}</v-list-tile-sub-title>
                 </v-list-tile-content>
                 <v-list-tile-action>
-                    <v-btn icon ripple>
+                    <v-btn
+                        icon ripple
+                        @click="openInFolder(topic)"
+                    >
                         <v-icon color="grey lighten-1">folder</v-icon>
                     </v-btn>
                 </v-list-tile-action>
@@ -35,7 +38,7 @@
 
         <v-btn
             absolute top right fab
-            small dark color="teal"
+            small dark color="primary"
             :loading="loading"
             @click="refresh"
         >
@@ -46,8 +49,8 @@
         </v-btn>
     </v-list>
 </template>
-
 <script>
+// import { shell } from 'electron';
 import { topics } from '../../files';
 
 
@@ -104,6 +107,12 @@ export default {
         loading: false
     }),
 
+    computed: {
+        darkTheme() {
+            return this.$store.state.settings.darkTheme;
+        }
+    },
+
     methods: {
         getIcon(topic) {
             return topic.passed ? 'check_circle' : 'insert_drive_file';
@@ -143,10 +152,15 @@ export default {
         },
 
         getClassesFor(topic) {
+            const modifier = this.darkTheme ? 'darken-2' : 'lighten-2';
             if (this.selected && topic.id === this.selected.id) {
-                return ['teal', 'lighten-4'];
+                return ['primary', modifier];
             }
             return [];
+        },
+
+        openInFolder(topic) {
+            // shell.openItem(topic.);
         }
     },
 

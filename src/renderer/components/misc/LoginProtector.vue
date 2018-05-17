@@ -16,7 +16,7 @@
                                 v-model="username"
                                 label="Ваше имя"
                                 prepend-icon="person"
-                                color="teal"
+                                color="primary"
                                 ref="usernameTextField"
                                 :rules="[value => !!value.length || 'Имя не может быть пустым']"
                             ></v-text-field>
@@ -38,7 +38,7 @@
                             <v-spacer />
                             <v-btn
                                 dark
-                                class="teal"
+                                class="primary"
                                 :loading="loading"
                                 @click="logIn"
                             >Вход</v-btn>

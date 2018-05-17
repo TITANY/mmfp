@@ -44,7 +44,7 @@
                 dark
                 app
                 clipped-left
-                class="teal darken-1"
+                color="primary"
             >
                 <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
                 <v-tooltip bottom>
@@ -56,7 +56,7 @@
                 <v-spacer></v-spacer>
 
                 <v-tooltip bottom>
-                    <v-btn slot="activator" icon @click="openTopicsList"><v-icon>list</v-icon></v-btn>
+                    <v-btn slot="activator" icon @click="openTopicsList"><v-icon>folder_open</v-icon></v-btn>
                     <span>Список тем</span>
                 </v-tooltip>
                 <v-tooltip bottom>
@@ -107,7 +107,7 @@
                     </mmfp-dialog>
                 </v-container>
             </v-content>
-            <v-footer fixed app dark class="teal lighten-2">
+            <v-footer fixed app dark class="primary px-3">
                 <v-spacer></v-spacer>
                 <span class="white--text">&copy; 2017-2018, TITANY</span>
             </v-footer>

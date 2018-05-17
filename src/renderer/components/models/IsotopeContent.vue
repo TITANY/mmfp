@@ -25,7 +25,7 @@
                 @click="showConstantsDialog = true"
             >Изменить константы</v-btn>
             <v-btn
-                dark color="teal"
+                dark color="primary"
                 @click="refreshModel"
             >Рассчитать</v-btn>
         </div>

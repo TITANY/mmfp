@@ -42,7 +42,7 @@
                     @click.stop="resetValues"
                 >Сбросить к умолчаниям</v-btn>
                 <v-btn
-                    dark color="teal"
+                    dark color="primary"
                     @click="applyValues"
                 >Применить</v-btn>
             </v-card-actions>

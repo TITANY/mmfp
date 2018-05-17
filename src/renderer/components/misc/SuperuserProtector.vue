@@ -12,7 +12,7 @@
                         </v-card-title>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn dark color="teal" @click="goHome">В начало</v-btn>
+                            <v-btn dark color="primary" @click="goHome">В начало</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-flex>

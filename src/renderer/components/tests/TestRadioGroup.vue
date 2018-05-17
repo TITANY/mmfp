@@ -34,7 +34,7 @@ export default {
     },
     methods: {
         getColor(a) {
-            if (!this.finished) return 'teal';
+            if (!this.finished) return 'primary';
             return a.correct ? 'green' : 'red';
         },
         getClass(a) {

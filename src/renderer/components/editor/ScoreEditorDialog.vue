@@ -6,21 +6,22 @@
                 <v-text-field
                     label="Название"
                     v-model="title"
-                    prepend-icon="title" color="teal"
+                    prepend-icon="title"
+                    color="primary"
                     required
                 ></v-text-field>
 
                 <v-switch
                     label="По умолчанию"
                     v-model="isDefault"
-                    color="teal"
+                    color="primary"
                 ></v-switch>
 
                 <v-text-field
                     v-if="!isDefault"
                     label="Минимальный балл"
                     v-model="startsFrom"
-                    prepend-icon="stars" color="teal"
+                    prepend-icon="stars" color="primary"
                     required
                     :rules="[isNumber]"
                 ></v-text-field>
@@ -29,7 +30,7 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                    dark color="teal"
+                    dark color="primary"
                     @click.native.prevent="dialog = false"
                 >Готово</v-btn>
             </v-card-actions>

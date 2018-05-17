@@ -70,7 +70,7 @@
             persistent
         >
             <v-btn
-                dark color="teal"
+                dark color="primary"
                 slot="activator"
                 @click="openChangeAnswersDialog"
             >Изменить ответы</v-btn>
@@ -90,7 +90,7 @@
                         @click="closeChangeAnswersDialog"
                     >Отмена</v-btn>
                     <v-btn
-                        dark color="teal"
+                        dark color="primary"
                         @click="applyChangeAnswers"
                     >Применить</v-btn>
                 </v-card-actions>

@@ -35,7 +35,7 @@
                     <v-switch
                         label="Тёмная тема"
                         v-model="darkTheme"
-                        color="teal"
+                        color="primary"
                     ></v-switch>
                 </v-card-text>
             </v-card>

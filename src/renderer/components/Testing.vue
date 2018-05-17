@@ -11,7 +11,7 @@
                         </p>
                         <div v-if="loading">
                             <p>Загрузка теста...</p>
-                            <v-progress-circular indeterminate color="teal"></v-progress-circular>
+                            <v-progress-circular indeterminate color="primary"></v-progress-circular>
                         </div>
                         <template v-if="loaded && !loading">
                             <div class="pb-3">
@@ -55,12 +55,12 @@
                                 </v-stepper-items>
                             </v-stepper>
                             <v-layout row>
-                                <v-btn class="teal white--text" @click="stepBack">
+                                <v-btn dark class="primary" @click="stepBack">
                                     <v-icon>navigate_before</v-icon>
                                     Предыдущий
                                 </v-btn>
                                 <v-spacer></v-spacer>
-                                <v-btn class="teal white--text" @click="stepFront">
+                                <v-btn dark class="primary" @click="stepFront">
                                     Следующий
                                     <v-icon>navigate_next</v-icon>
                                 </v-btn>
@@ -71,7 +71,7 @@
                         <v-spacer></v-spacer>
                         <v-btn
                             v-if="loaded && !loading"
-                            class="teal white--text"
+                            dark class="primary"
                             @click="checkResults"
                         >Закончить тестирование</v-btn>
                     </v-card-actions>
