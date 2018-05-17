@@ -4,7 +4,7 @@
         lazy
         absolute
         @input="onDialogInput"
-        persistent
+        :persistent="persistent"
         max-width="750px"
     >
         <v-card>
@@ -39,7 +39,7 @@ export default {
         },
         'persistent': {
             type: Boolean,
-            default: true
+            default: false
         },
         'title': {
             default: false

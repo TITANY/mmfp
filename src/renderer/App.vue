@@ -96,7 +96,6 @@
                         v-model="topicsListDialog.shown"
                         :actions="topicsListDialog.actions"
                         :title="true"
-                        presistent
                         width="50%"
                         @result="onTopicsResult"
                     >

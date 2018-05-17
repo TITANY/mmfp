@@ -70,10 +70,10 @@
     "mathjax": "^2.7.2",
     "mathjs": "^3.16.5",
     "mkdirp": "^0.5.1",
-    "vuetify": "0.17.1",
-    "vue": "^2.3.3",
+    "vuetify": "1.0.18",
+    "vue": "^2.5.0",
     "vue-router": "^2.5.3",
-    "vuex": "^2.3.1"
+    "vuex": "^2.5.0"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
