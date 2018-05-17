@@ -1,5 +1,5 @@
 <template>
-    <v-list two-line subheader>
+    <v-list two-line subheader style="position: relative;">
         <template
             v-for="(cat, i) in cats"
         >
@@ -32,6 +32,18 @@
                 <div class="text-xs-center body-2 grey--text" style="width: 100%;">(тем не найдено)</div>
             </v-list-tile-content>
         </v-list-tile>
+
+        <v-btn
+            absolute top right fab
+            small dark color="teal"
+            :loading="loading"
+            @click="refresh"
+        >
+            <v-tooltip left>
+                <v-icon slot="activator">refresh</v-icon>
+                <span>Обновить список тем</span>
+            </v-tooltip>
+        </v-btn>
     </v-list>
 </template>
 
@@ -88,7 +100,8 @@ export default {
     data: () => ({
         cats: [],
         error: false,
-        selected: this.value
+        selected: this.value,
+        loading: false
     }),
 
     methods: {
@@ -113,6 +126,7 @@ export default {
         },
 
         refresh() {
+            this.loading = true;
             topics.list()
                 .then(topics => {
                     this.cats = splitToCats(topics.map(normalizeTopic));
@@ -120,6 +134,11 @@ export default {
                 .catch(error => {
                     console.error(error);
                     this.error = true;
+                })
+                .then(() => {
+                    setTimeout(() => {
+                        this.loading = false;
+                    }, 500);
                 });
         },
 
