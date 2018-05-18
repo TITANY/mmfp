@@ -110,13 +110,21 @@
             <v-footer fixed app dark class="primary px-3">
                 <v-spacer></v-spacer>
                 <span class="white--text">&copy; 2017-2018, TITANY</span>
+                <span class="px-1">&bull;</span>
+                <span>
+                    <a
+                        class="white--text"
+                        href="https://github.com/TITANY/mmfp"
+                        @click.prevent="openGithub"
+                    >GitHub</a>
+                </span>
             </v-footer>
         </v-app>
         Hello
     </div>
 </template>
 <script>
-import { remote } from 'electron';
+import { remote, shell } from 'electron';
 import openLink from './utils/openlink';
 import eventBus from './utils/eventbus';
 import sidemenu from './sidemenu';
@@ -259,6 +267,10 @@ export default {
 
         openSettings: function () {
             this.createDialog(createComponent('settings-content', { title: 'Настройки' }), () => {});
+        },
+
+        openGithub() {
+            shell.openExternal('https://github.com/TITANY/mmfp');
         }
     },
 
