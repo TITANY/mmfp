@@ -233,7 +233,8 @@ export default {
             });
         },
         onGroupChanged(changes) {
-            this.groups.splice(this.selectedGroupIndex, 1, changes);
+            Object.assign(this.groups[this.selectedGroupIndex], changes);
+            // this.groups.splice(this.selectedGroupIndex, 1, changes);
         },
         removeGroup(i) {
             if (this.groups.length > 1) {

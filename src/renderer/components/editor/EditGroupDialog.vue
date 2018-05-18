@@ -31,6 +31,7 @@
 </template>
 
 <script>
+// import Group from '@/classes/tests/Group';
 import ShownEditor from './ShownEditor.vue';
 
 export default {
