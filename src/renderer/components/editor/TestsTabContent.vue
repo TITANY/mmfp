@@ -365,6 +365,7 @@ export default {
         },
 
         save(file) {
+            this._test.description = this.description;
             this._test.write(file);
         }
     },

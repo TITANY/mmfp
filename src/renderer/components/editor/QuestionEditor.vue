@@ -185,9 +185,15 @@ export default {
                 question: this.question,
                 group: this.qGroup,
                 shown: this.shownAnswers,
+                points: this.scores,
 
                 shownCorrect: { all: true }
             };
+
+            for (let key in nval.points) {
+                console.log(key);
+                nval.points[key] = +nval.points[key];
+            }
 
             if (this.shownCorrectEditable) {
                 nval.shownCorrect = this.shownCorrect;
@@ -201,6 +207,7 @@ export default {
             this.question = this.value.question;
             this.qGroup = this.value.group.id;
             this.shownAnswers = this.value.shown;
+            this.scores = this.value.points;
 
             this.shownCorrect = this.value.shownCorrect;
         },
