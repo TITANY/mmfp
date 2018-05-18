@@ -68,14 +68,7 @@
                     key="theory-tab"
                     id="theory"
                 >
-                    <v-card flat>
-                        <v-card-text>
-                            <v-alert color="info" icon="info" value="true">
-                                Для редактирования содержимого теоретического раздела
-                                пожалуйста, воспользуйтесь сторонним текстовым редактором!
-                            </v-alert>
-                        </v-card-text>
-                    </v-card>
+                    <theory-tab-content :dir="topicDir"></theory-tab-content>
                 </v-tab-item>
 
                 <v-tab-item
@@ -102,6 +95,7 @@ import path from 'path';
 import { topics } from '../../../files';
 import InfoTabContent from './InfoTabContent.vue';
 import TestsTabContent from './TestsTabContent.vue';
+import TheoryTabContent from './TheoryTabContent.vue';
 import Test from '@/classes/tests/Test';
 
 
@@ -202,6 +196,7 @@ export default {
 
     components: {
         InfoTabContent,
+        TheoryTabContent,
         TestsTabContent
     }
 };

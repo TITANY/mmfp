@@ -13,10 +13,10 @@ const objMapDiv = (obj, div) => {
 class Sigmas {
     constructor({
         c: {
-            n9: cn9 = 1, n0 = 1, n8 = 1
+            n9: cn9 = 269.3, n0 = 287, n8 = 2.71
         } = {},
         a: {
-            n9: an9 = 1.2, n1 = 1.1, n5 = 1
+            n9: an9 = 1028, n1 = 1375.4, n5 = 683
         } = {}
     } = {}) {
         this.c = { n9: cn9, n0, n8 };
@@ -34,10 +34,10 @@ class Sigmas {
 export default class ICModel {
     constructor({
         sigma,
-        mu = 1,
-        phi = 0.5,
-        nuEff5 = 1,
-        N5_0 = 1,
+        mu = 1.0525,
+        phi = 0.92,
+        nuEff5 = 2.08,
+        N5_0 = 0.7,
         N8 = 1
     } = {}) {
         this.sigma = new Sigmas(sigma);

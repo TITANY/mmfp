@@ -50,8 +50,9 @@
     </v-list>
 </template>
 <script>
-// import { shell } from 'electron';
-import { topics } from '../../files';
+import path from 'path';
+import { shell } from 'electron';
+import { topics, TOPICS_DIR_ABS } from '../../files';
 
 
 const labels = {
@@ -160,7 +161,8 @@ export default {
         },
 
         openInFolder(topic) {
-            // shell.openItem(topic.);
+            // console.log(topic.original);
+            shell.showItemInFolder(path.resolve(TOPICS_DIR_ABS, topic.original.dir));
         }
     },
 

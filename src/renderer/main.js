@@ -1,5 +1,3 @@
-/* eslint import/first: 0 */
-// require('@/assets/mathjax/tex');
 import Vue from 'vue';
 import Vuetify from 'vuetify';
 import colors from 'vuetify/es5/util/colors';

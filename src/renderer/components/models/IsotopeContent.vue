@@ -1,18 +1,30 @@
 <template>
     <div class="isotope-content-model mathjax">
         <v-subheader>Начальные параметры</v-subheader>
-
+        <p class="body-1 grey--text">
+            <v-icon color="info">help_outline</v-icon> Наведите указатель мыши на параметр, чтобы узнать больше.
+        </p>
         <v-container fluid>
             <v-layout row wrap align-center>
                 <template
                     v-for="(val, key) in fields"
                 >
-                    <v-flex xs2 md1 text-xs-right pr-3 :key="key + '_1'">${{ val }}$</v-flex>
+                    <v-flex
+                        :key="key + '_1'"
+                        xs2 md1
+                        class="text-xs-right pr-3"
+                    >
+                        <v-tooltip bottom>
+                            <span slot="activator">${{ val.label }}$</span>
+                            <span>{{ val.description }}</span>
+                        </v-tooltip>
+                    </v-flex>
                     <v-flex xs10 md11 lg5 :key="key + '_2'">
                         <v-text-field
                             single-line
                             v-model="model[key]"
                             label="Значение"
+                            :suffix="val.unit"
                         ></v-text-field>
                     </v-flex>
                 </template>
@@ -36,11 +48,12 @@
         <div v-show="false" class="view-source">
             <script
                 type="application/x-math-plot"
-                data-y="c_5"
-                :data-label="c5z"
-            >{{ c5 }}</script>
+                data-y="c_5|c_9|c_0|c_1"
+                data-titles="U-235|Pu-239|Pu-240|Pu-241"
+                :data-label="[c5z, c9z, c0z, c1z].join('|')"
+            >{{ c5 }}|{{ c9 }}|{{ c0 }}|{{ c1 }}</script>
 
-            <v-divider></v-divider>
+            <!-- <v-divider></v-divider>
 
             <script
                 type="application/x-math-plot"
@@ -62,7 +75,7 @@
                 type="application/x-math-plot"
                 data-y="c_1"
                 :data-label="c1z"
-            >{{ c1 }}</script>
+            >{{ c1 }}</script> -->
         </div>
         <div class="view-destination">Отрисовка...</div>
 
@@ -97,6 +110,15 @@ const getRandomId = () => 'formula_' + new Array(16).fill(null)
 const getRenderableFn = (name, model) => model.formulas()[name].replace(/z/g, 'x');
 const getWritableFn = (name, model) => model.formulas()[name].replace(/(\.[0-9]{3})([0-9]+)/g, '$1');
 
+const zip = (a1, a2) => {
+    const l = Math.min(a1.length, a2.length);
+    const r = new Array(l);
+    for (let i = 0; i < l; i++) {
+        r[i] = [a1[i], a2[i]];
+    }
+    return r;
+};
+
 export default {
     name: 'IsotopeContent',
     props: {
@@ -109,11 +131,31 @@ export default {
             model,
 
             fields: {
-                mu: '\\mu',
-                phi: '\\phi',
-                nuEff5: '\\nu_{эфф}^5',
-                N5_0: 'N_5^0',
-                N8: 'N_8'
+                mu: {
+                    label: '\\mu',
+                    description: 'Коэффициент размножения на быстрых нейтронах',
+                    unit: ''
+                },
+                phi: {
+                    label: '\\phi',
+                    description: 'Вероятность избежать резонансного захвата',
+                    unit: ''
+                },
+                nuEff5: {
+                    label: '\\nu_{эфф}^5',
+                    description: 'Число вторичных нейтронов на один поглощённый первичный',
+                    unit: ''
+                },
+                N5_0: {
+                    label: 'N_5^0',
+                    description: 'Начальная ядерная концентрация U-235',
+                    unit: ''
+                },
+                N8: {
+                    label: 'N_8',
+                    description: 'Ядерная концентрация U-238',
+                    unit: ''
+                }
             },
 
             defSigma: new ICModel(model).sigma,
@@ -144,32 +186,49 @@ export default {
             formulas.each(function () {
                 const $this = $(this);
 
-                const tex = '$' + $this.attr('data-y') +
-                    ' = ' + mathjs.simplify($this.attr('data-label')).toTex() + '$';
+                const ys = $this.attr('data-y').split('|');
+                const fns = $this.attr('data-label').split('|').map(l => mathjs.simplify(l).toTex());
+
+                const tex = zip(ys, fns).map(([y, fn]) => `$${y} = ${fn}$`);
+                // const tex = '$' +  +
+                //     ' = ' + mathjs.simplify($this.attr('data-label')).toTex() + '$';
 
                 $this.replaceWith(`
                     <div class="math-plot-wrapper text-xs-center my-4">
                         <div
                             id="${getRandomId()}" class="math-plot"
                             data-formula="${$this.text()}"
+                            data-titles="${$this.attr('data-titles')}"
                         ></div>
-                        <div class="math-plot-label">${tex}</div>
+                        ${tex.map(t => `<div class="math-plot-label py-3">${t}</div>`).join('')}
                     </div>
                 `);
             });
 
+            const vm = this;
             $content.find('.math-plot').each(function () {
                 const $this = $(this);
 
+                const formulas = $
+                    .trim($this.attr('data-formula'))
+                    .replace(/[\r\n]/g, '')
+                    .split('|')
+                    .concat(['y = ' + vm.model.N8])
+                    .map(fn => ({ fn, sampler: 'builtIn', range: [0, Infinity], graphType: 'polyline' }));
+
+                const names = $this.attr('data-titles').split('|').concat(['U-238']);
+
                 functionPlot({
                     target: '#' + $this.attr('id'),
-                    xAxis: {domain: [0, 10]},
-                    data: [{
-                        fn: $.trim($this.attr('data-formula')).replace(/[\r\n]/g, ''),
-                        sampler: 'builtIn', // this will make function-plot use the evaluator of math.js
-                        range: [0, Infinity],
-                        graphType: 'polyline'
-                    }]
+                    xAxis: { domain: [0, 10] },
+                    yAxis: { domain: [0, 1.1] },
+                    data: zip(formulas, names).map(([f, title]) => Object.assign(f, { title }))
+                    // [{
+                    //     fn: $.trim($this.attr('data-formula')).replace(/[\r\n]/g, '').split('|'),
+                    //     sampler: 'builtIn', // this will make function-plot use the evaluator of math.js
+                    //     range: [0, Infinity],
+                    //     graphType: 'polyline'
+                    // }]
                 });
             });
 

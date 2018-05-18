@@ -10,12 +10,15 @@
                         <template
                             v-for="(val, key) in localValue.c"
                         >
-                            <v-flex xs2 text-xs-right pr-3 :key="key + '_1'">${{ renderLabel('c', key) }}$</v-flex>
+                            <v-flex xs2 text-xs-right pr-3 :key="key + '_1'">
+                                <span>${{ renderLabel('c', key) }}$</span>
+                            </v-flex>
                             <v-flex xs10 :key="key + '_2'">
                                 <v-text-field
                                     single-line
                                     v-model="localValue.c[key]"
                                     label="Значение"
+                                    suffix="барн"
                                 ></v-text-field>
                             </v-flex>
                         </template>
@@ -29,6 +32,7 @@
                                     single-line
                                     v-model="localValue.a[key]"
                                     label="Значение"
+                                    suffix="барн"
                                 ></v-text-field>
                             </v-flex>
                         </template>
@@ -80,7 +84,14 @@ export default {
 
         renderLabel(ch, n) {
             const digit = n[1];
-            return `\\sigma_{${ch}}^${digit}`;
+            const isotope = ({
+                '0': 'Pu-240',
+                '1': 'Pu-241',
+                '5': 'U-235',
+                '8': 'U-238',
+                '9': 'Pu-239'
+            })[digit];
+            return `\\sigma_{${ch}}^{${isotope}}`;
         }
     },
 

@@ -7,7 +7,7 @@ const app = remote.app;
 
 const cwd = path.join(app.getPath('appData'), 'mmfp');
 const TOPICS_DIR = path.join('files', 'topics');
-const TOPICS_DIR_ABS = path.resolve(cwd, TOPICS_DIR);
+export const TOPICS_DIR_ABS = path.resolve(cwd, TOPICS_DIR);
 const TOPIC_JSON = 'topic.json';
 
 export const APP_DATA = cwd;
