@@ -110,11 +110,18 @@ const getRandomId = () => 'formula_' + new Array(16).fill(null)
 const getRenderableFn = (name, model) => model.formulas()[name].replace(/z/g, 'x');
 const getWritableFn = (name, model) => model.formulas()[name].replace(/(\.[0-9]{3})([0-9]+)/g, '$1');
 
-const zip = (a1, a2) => {
-    const l = Math.min(a1.length, a2.length);
+const zip = (...arrs) => {
+    if (!arrs.length) return [];
+    let l = arrs[0].length;
+    for (let i = 0; i < arrs.length; i++) {
+        if (arrs[i].length < l) l = arrs[i].length;
+    }
     const r = new Array(l);
     for (let i = 0; i < l; i++) {
-        r[i] = [a1[i], a2[i]];
+        r[i] = new Array(arrs.length);
+        for (let j = 0; j < arrs.length; j++) {
+            r[i][j] = arrs[j][i];
+        }
     }
     return r;
 };
@@ -214,15 +221,24 @@ export default {
                     .replace(/[\r\n]/g, '')
                     .split('|')
                     .concat(['y = ' + vm.model.N8])
-                    .map(fn => ({ fn, sampler: 'builtIn', range: [0, Infinity], graphType: 'polyline' }));
+                    .map(fn => ({
+                        fn,
+                        sampler: 'builtIn',
+                        range: [0, Infinity],
+                        graphType: 'polyline'
+                    }));
 
                 const names = $this.attr('data-titles').split('|').concat(['U-238']);
+                // works awfully bad in function-plot >_<
+                // const colors = ['#f11', '#5f1', '#158', '#15f', '#51f'];
 
                 functionPlot({
                     target: '#' + $this.attr('id'),
-                    xAxis: { domain: [0, 10] },
+                    xAxis: { domain: [0, 2] },
                     yAxis: { domain: [0, 1.1] },
-                    data: zip(formulas, names).map(([f, title]) => Object.assign(f, { title }))
+                    data: zip(formulas, names).map(
+                        ([f, title]) => Object.assign(f, { title })
+                    )
                     // [{
                     //     fn: $.trim($this.attr('data-formula')).replace(/[\r\n]/g, '').split('|'),
                     //     sampler: 'builtIn', // this will make function-plot use the evaluator of math.js
