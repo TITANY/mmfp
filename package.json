@@ -1,6 +1,6 @@
 {
   "name": "mmfp",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "BobNobrain <nikita-ivanov.mail@yandex.ru>",
   "description": "MMFP studying app",
   "license": null,
@@ -67,12 +67,14 @@
     "d3": "3",
     "function-plot": "^1.18.1",
     "jquery": "^3.2.1",
+    "material-design-icons": "^3.0.1",
     "mathjax": "^2.7.2",
     "mathjs": "^3.16.5",
     "mkdirp": "^0.5.1",
-    "vuetify": "1.0.18",
+    "roboto-fontface": "^0.9.0",
     "vue": "^2.5.0",
     "vue-router": "^2.5.3",
+    "vuetify": "1.0.18",
     "vuex": "^2.5.0"
   },
   "devDependencies": {
@@ -112,6 +114,7 @@
     "imports-loader": "^0.7.1",
     "multispinner": "^0.2.1",
     "node-loader": "^0.6.0",
+    "resolve-url-loader": "^2.3.0",
     "style-loader": "^0.18.2",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
